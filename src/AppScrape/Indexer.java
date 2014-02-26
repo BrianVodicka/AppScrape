@@ -29,7 +29,7 @@ public class Indexer {
         String timeStamp = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
         PrintWriter writer = new PrintWriter(timeStamp +".txt", "UTF-8");
         for (AppObject target : list) {
-            System.out.println(target.getAllData());
+            //System.out.println(target.getAllData());
             writer.print(target.getAllData() + "\n");
         }
         writer.close();

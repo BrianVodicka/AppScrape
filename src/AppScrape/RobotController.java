@@ -148,12 +148,12 @@ public class RobotController extends  Robot{
             robot.keyPress(KeyEvent.VK_ENTER);
             Thread.sleep(10);
             robot.keyRelease(KeyEvent.VK_ENTER);
-            Thread.sleep(3000);
+            Thread.sleep(6000);
 
             boolean free_apps = false;
             getPaidApps(i, free_apps);
             free_apps = true;
-            //getPaidApps(i, free_apps);
+            getPaidApps(i, free_apps);
 
             robot.mouseMove(20, 100);
             Thread.sleep(20);
@@ -164,6 +164,8 @@ public class RobotController extends  Robot{
     }
 
     private void getPaidApps(int counter, boolean free) throws InterruptedException, IOException, UnsupportedFlavorException {
+
+        // scrolls screen down to find free apps link
         if (free) {
             int m = 0;
             while (m < 15) {
@@ -172,26 +174,37 @@ public class RobotController extends  Robot{
                 robot.keyRelease(KeyEvent.VK_DOWN);
                 m++;
             }
-            Thread.sleep(1500);
+            Thread.sleep(2500);
         }
-        int categories_x = screenSize.width / 2 + 625;
-        int y = findTopAppLink();
-        robot.mouseMove(categories_x, y);
-        Thread.sleep(5000);
-        if (y == 0)
-            return;
-        copyToClipboard(categories_x, y);
-        String temp = getClipboard();
-        System.out.println(temp);
-        String substring = "https://itunes.apple.com/WebObjects/MZStore.woa/wa";
-        if (temp.contains(substring)) {
-            robot.mouseMove(categories_x, y);
-            robot.mousePress(LEFT_CLICK);
-            robot.mouseRelease(LEFT_CLICK);
-            Thread.sleep(10000);
-            getTopApps(counter); // finds paid apps
 
-            Thread.sleep(10000);
+        // set up variables for loop to find link
+        int categories_x = screenSize.width / 2 + 565;
+        int add = 0;
+        boolean found = false;
+
+        while (!found){
+            int y = findTopAppLink(categories_x);
+            Thread.sleep(1000);
+            if (y == -1)
+                return;
+            copyToClipboard(categories_x, y);
+            String temp = getClipboard();
+            System.out.println(temp);
+            String substring = "https://itunes.apple.com/WebObjects/MZStore.woa/wa";
+            if (temp.contains(substring)) {
+                robot.mouseMove(categories_x, y);
+                robot.mousePress(LEFT_CLICK);
+                robot.mouseRelease(LEFT_CLICK);
+                Thread.sleep(7000);
+                getTopApps(counter); // finds paid apps
+                found = true;
+            } else {
+                add += 3;
+                if (add > 100) {
+                    return;
+                }
+                categories_x += add;
+            }
         }
     }
 
@@ -202,14 +215,15 @@ public class RobotController extends  Robot{
         ArrayList<String> currentUrls = new ArrayList<>();
         int count = 1;
         while (count < 24) { // 192
-            for (int i = 0; i < 3; i++) { // 4
+            for (int i = 0; i < 4; i++) { // 4
                 y_offset = y_offset + 196 * i;
                 for (int j = 0; j < 12; j++) { // 12
-                    copyToClipboard(x_offset + 130 * j, y_offset);
+                    quickCopy(x_offset + 130 * j, y_offset);
                     String result = getClipboard();
                     if(!currentUrls.contains(result))
                         currentUrls.add(count + " " + result);
                     else {
+                        System.out.println("DID NOT ADD: " + result);
                         j--;
                         continue;
                     }
@@ -231,10 +245,10 @@ public class RobotController extends  Robot{
             Thread.sleep(850);
         }
         System.out.println("SIZE IS:" + currentUrls.size() + "List is: " + counter);
-        urls = new String[globalCounter + 1][currentUrls.size()];
-        int m = currentUrls.size() - 1;
+        urls = new String[globalCounter + 1][currentUrls.size() + 1];
+        int m = currentUrls.size();
         for(int i = 0; i < m; i++) {
-            urls[globalCounter][i] = currentUrls.remove(0);
+            urls[globalCounter][i] = currentUrls.get(i);
         }
         globalCounter++;
 
@@ -245,27 +259,23 @@ public class RobotController extends  Robot{
         Thread.sleep(20);
     }
 
-    private int findTopAppLink() {
+    private int findTopAppLink(int x_pos) {
         int y_pos = 675;
 
         // TODO: make memory usage better by only capturing part of the screen
         BufferedImage screen = robot.createScreenCapture(new Rectangle(screenSize));
-
         for (; y_pos < 1000; y_pos += 3) {
-            robot.mouseMove(screenSize.width - 200, y_pos);
-            if (testColor(screen, y_pos))
+            if (testColor(screen, y_pos, x_pos))
                 break;
         }
         for (int i = 2; i < 150; i += 2) {
             if (checkGrey(screen, y_pos - i))
-                return y_pos - i - 21;
+                return y_pos - i - 26;
         }
-        return 0;
+        return -1;
     }
 
-    private boolean testColor(BufferedImage screen, int test_position) {
-        int x_pos = screenSize.width / 2 + 564;
-        int y_pos = test_position;
+    private boolean testColor(BufferedImage screen, int y_pos, int x_pos) {
         int temp = screen.getRGB(x_pos, y_pos);
         Color c = new Color(temp);
         if (!testGrey(c)) {
@@ -286,7 +296,6 @@ public class RobotController extends  Robot{
         int temp = screen.getRGB(x_pos, y_pos);
         Color c = new Color(temp);
         if (testGrey(c)) {
-            robot.mouseMove(x_pos, y_pos);
             int tempb = screen.getRGB(x_pos - 5, y_pos);
             int tempe = screen.getRGB(x_pos + 5, y_pos);
             int tempc = screen.getRGB(x_pos - 10, y_pos);
@@ -312,27 +321,43 @@ public class RobotController extends  Robot{
                 test = true;
             } catch (IllegalArgumentException e) {
                 Thread.sleep(200);
-                continue;
             } catch (UnsupportedFlavorException e) {
                 Thread.sleep(200);
-                continue;
             } catch (IllegalStateException e) {
                 Thread.sleep(200);
-                continue;
             }
         }
         return result;
     }
 
+    // error here: fix case when it right clicks but no message box appears
     private void copyToClipboard(int x, int y) throws InterruptedException {
         robot.mouseMove(x, y);
         robot.mousePress(RIGHT_CLICK); // right click on app
         robot.mouseRelease(RIGHT_CLICK);
-        Thread.sleep(350);
+        Thread.sleep(400);
+        BufferedImage screen = robot.createScreenCapture(new Rectangle(screenSize));
+        Color temp = new Color(screen.getRGB(x + 35, y + 35));
+        System.out.println("COLORS ARE: " + temp.getRed() + " " + temp.getGreen() + " " + temp.getBlue());
+        if (temp.getRed() == 240 && temp.getGreen() == 206 && temp.getBlue() == 135) {
+            Thread.sleep(15000);
+            robot.mouseMove(x + 35, y + 35);
+            robot.mousePress(LEFT_CLICK); // copy url
+            robot.mouseRelease(LEFT_CLICK);
+            Thread.sleep(1000);
+        }
+    }
+
+    private void quickCopy(int x, int y) throws InterruptedException {
+        robot.mouseMove(x, y);
+        robot.mousePress(RIGHT_CLICK); // right click on app
+        robot.mouseRelease(RIGHT_CLICK);
+        Thread.sleep(400);
         robot.mouseMove(x + 35, y + 35);
         robot.mousePress(LEFT_CLICK); // copy url
         robot.mouseRelease(LEFT_CLICK);
-        Thread.sleep(80);
+        Thread.sleep(1000);
+
     }
 
 }

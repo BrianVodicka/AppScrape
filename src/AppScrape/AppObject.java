@@ -44,6 +44,7 @@ public class AppObject {
             return;
         }
         this.url = url;
+        this.rank = rank;
         setup();
     }
 
@@ -62,12 +63,17 @@ public class AppObject {
     }
 
     private String getTitle(Document doc){
+        try {
         Elements elem = doc.select("div[id=title]");
         Elements elm = elem.select("h1");
         checkSize(elm);
         Element data = elm.get(0);
         String temp = data.ownText();
         return temp;
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("URL IS: " + url);
+            return "ERROR";
+        }
     }
 
     private String getCategory(Document doc) {
@@ -88,28 +94,36 @@ public class AppObject {
     }
 
     private int getTotalRatings(Document doc){
-        Elements elem = doc.select("span[class=rating-count]");
-        checkSize(elem);
-        Element e = elem.get(0);
-        String temp = e.ownText();
-        String[] test = temp.split(" ");
-        return Integer.parseInt(test[0]); // TODO: throws number format exception
+        try {
+            Elements elem = doc.select("span[class=rating-count]");
+            checkSize(elem);
+            Element e = elem.get(0);
+            String temp = e.ownText();
+            String[] test = temp.split(" ");
+            return Integer.parseInt(test[0]); // TODO: throws number format exception
+        } catch (IndexOutOfBoundsException e) {
+            return 0;
+        }
     }
 
     private int getAvgRating(Document doc){
-        Elements parent = doc.select("div .customer-ratings");
-        Elements elem = parent.select("div[class=rating]");
-        Elements e = elem.select("span[class=rating-star ghost]");
-        return 5 - e.size();
+        if (this.totalRatings != 0) {
+            Elements parent = doc.select("div .customer-ratings");
+            Elements elem = parent.select("div[class=rating]");
+            Elements e = elem.select("span[class=rating-star ghost]");
+            return 5 - e.size();
+        } else {
+            return -1;
+        }
     }
 
     private void checkSize(Elements elem){
         if (elem.size() > 1) {
-            System.out.println("Problem: more than 1 h1");
+            //System.out.println("Problem: more than 1 h1");
             for (int i = 0; i < elem.size(); i++) {
                 Element data = elem.get(i);
                 String temp = data.ownText();
-                System.out.println(temp);
+                //System.out.println(temp);
             }
         }
     }

@@ -24,16 +24,18 @@ public class Main {
         try {
             RobotController test = new RobotController();
             urls = test.begin("C:/iTunes/iTunes.exe");
-            appObjects = new AppObject[urls.length][];
+            appObjects = new AppObject[urls.length + 1][];
             for (int i = 0; i < urls.length; i++) {
                 appObjects = new AppObject[urls.length][urls[i].length];
                 int m = urls[i].length;
                 for(int j = 0; j < urls[i].length - 1; j++) {
                     String[] temp = urls[i][j].split(" ");
+                    System.out.println(temp[0] + " " + Integer.parseInt(temp[0]) + " " + temp[1]);
                     appObjects[i][j] = new AppObject(temp[1], Integer.parseInt(temp[0]));
                 }
             }
 
+            // TODO FIX OBO ERROR
             for (int i = 0; i < appObjects.length; i++) {
                 ArrayList<AppObject> temp = new ArrayList<>();
                 for (int j = 0; j < appObjects[i].length - 1; j++) {
