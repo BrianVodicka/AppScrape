@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -37,7 +38,8 @@ public class RobotController extends  Robot{
     final int RIGHT_CLICK = InputEvent.BUTTON3_DOWN_MASK;
 
     int globalCounter = 0;
-    String[][] urls;
+    ArrayList<ArrayList<String>> urls = new ArrayList<>();
+    //String[][] urls;
 
     String[] categories = {
             "Books",
@@ -72,7 +74,7 @@ public class RobotController extends  Robot{
         clipBoard = toolkit.getSystemClipboard();
     }
 
-    public String[][] begin(String target) throws InterruptedException, IOException, UnsupportedFlavorException {
+    public ArrayList<ArrayList<String>> begin(String target) throws InterruptedException, IOException, UnsupportedFlavorException {
         //openItunes(target);
         getBearings();
         //getIntoAppStore();
@@ -174,7 +176,7 @@ public class RobotController extends  Robot{
                 robot.keyRelease(KeyEvent.VK_DOWN);
                 m++;
             }
-            Thread.sleep(2500);
+            Thread.sleep(3500);
         }
 
         // set up variables for loop to find link
@@ -227,9 +229,7 @@ public class RobotController extends  Robot{
                         j--;
                         continue;
                     }
-
                     Thread.sleep(50);
-
                     count++;
                 }
                 y_offset = 225;
@@ -245,18 +245,14 @@ public class RobotController extends  Robot{
             Thread.sleep(850);
         }
         System.out.println("SIZE IS:" + currentUrls.size() + "List is: " + counter);
-        urls = new String[globalCounter + 1][currentUrls.size() + 1];
-        int m = currentUrls.size();
-        for(int i = 0; i < m; i++) {
-            urls[globalCounter][i] = currentUrls.get(i);
-        }
+        urls.add(currentUrls);
         globalCounter++;
 
         robot.mouseMove(20, 100);
         Thread.sleep(20);
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
-        Thread.sleep(20);
+        Thread.sleep(7000);
     }
 
     private int findTopAppLink(int x_pos) {
@@ -340,11 +336,11 @@ public class RobotController extends  Robot{
         Color temp = new Color(screen.getRGB(x + 35, y + 35));
         System.out.println("COLORS ARE: " + temp.getRed() + " " + temp.getGreen() + " " + temp.getBlue());
         if (temp.getRed() == 240 && temp.getGreen() == 206 && temp.getBlue() == 135) {
-            Thread.sleep(15000);
+            Thread.sleep(1000);
             robot.mouseMove(x + 35, y + 35);
             robot.mousePress(LEFT_CLICK); // copy url
             robot.mouseRelease(LEFT_CLICK);
-            Thread.sleep(1000);
+            Thread.sleep(300);
         }
     }
 
@@ -356,7 +352,7 @@ public class RobotController extends  Robot{
         robot.mouseMove(x + 35, y + 35);
         robot.mousePress(LEFT_CLICK); // copy url
         robot.mouseRelease(LEFT_CLICK);
-        Thread.sleep(1000);
+        Thread.sleep(300);
 
     }
 

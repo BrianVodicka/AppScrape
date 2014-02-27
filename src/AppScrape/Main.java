@@ -15,42 +15,39 @@ import java.util.ArrayList;
  */
 public class Main {
 
-    static String[][] urls;
-    static AppObject[][] appObjects;
-    static Indexer indexController;
+    static ArrayList<ArrayList<String>> urls;
 
     public static void main(String[] args){
-        indexController = new Indexer();
         try {
             RobotController test = new RobotController();
             urls = test.begin("C:/iTunes/iTunes.exe");
-            appObjects = new AppObject[urls.length + 1][];
-            for (int i = 0; i < urls.length; i++) {
-                appObjects = new AppObject[urls.length][urls[i].length];
-                int m = urls[i].length;
-                for(int j = 0; j < urls[i].length - 1; j++) {
-                    String[] temp = urls[i][j].split(" ");
-                    System.out.println(temp[0] + " " + Integer.parseInt(temp[0]) + " " + temp[1]);
-                    appObjects[i][j] = new AppObject(temp[1], Integer.parseInt(temp[0]));
+            for (int i = 0; i < urls.size(); i++) {
+                ArrayList<String> temp = urls.get(i);
+                ArrayList<AppObject> objects = new ArrayList<>();
+                for(int j = 0; j < temp.size(); j++) {
+                    String[] target = temp.get(j).split(" ");
+                    System.out.println(target[0] + " " + Integer.parseInt(target[0]) + " " + target[1]);
+                    objects.add(new AppObject(target[1], Integer.parseInt(target[0])));
                 }
+                Indexer.index(objects);
             }
 
             // TODO FIX OBO ERROR
-            for (int i = 0; i < appObjects.length; i++) {
+            /*for (int i = 0; i < appObjects.length; i++) {
                 ArrayList<AppObject> temp = new ArrayList<>();
                 for (int j = 0; j < appObjects[i].length - 1; j++) {
                     temp.add(appObjects[i][j]);
                 }
                 indexController.index(temp);
-            }
+            }*/
         } catch (AWTException e) {
 
         } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
     }
 
