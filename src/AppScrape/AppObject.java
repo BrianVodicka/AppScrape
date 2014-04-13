@@ -48,6 +48,14 @@ public class AppObject {
         setup();
     }
 
+    public AppObject(String s) {
+        String[] pieces = s.split("~");
+        this.title = pieces[1].substring(6, pieces[1].length());
+        this.rank = Integer.valueOf(pieces[2].substring(5, pieces[2].length()));
+        // wait is category necessary for comparison??
+        this.category = pieces[2].substring(9, pieces[3].length());
+    }
+
     private void setup(){
         Document doc = null;
         try {

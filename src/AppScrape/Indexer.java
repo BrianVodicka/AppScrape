@@ -1,5 +1,6 @@
 package AppScrape;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -16,6 +17,49 @@ import java.util.Calendar;
  */
 public class Indexer {
 
+    static final String[] categories = {
+        "Books - Paid",
+        "Books - Free",
+        "Business - Paid",
+        "Business - Free",
+        "Catalogs - Paid",
+        "Catalogs - Free",
+        "Education - Paid",
+        "Education - Free",
+        "Entertainment - Paid",
+        "Entertainment - Free",
+        "Finance - Paid",
+        "Finance - Free",
+        "Food & Drink - Paid",
+        "Food & Drink - Free",
+        "Games - Paid",
+        "Games - Free",
+        "Health & Fitness - Paid",
+        "Health & Fitness - Free",
+        "Kids - Paid",
+        "Kids - Free",
+        "Lifestyle - Paid",
+        "Lifestyle - Free",
+        "Medical - Paid",
+        "Medical - Free",
+        "Music - Paid",
+        "Music - Free",
+        "Navigation - Paid",
+        "Navigation - Free",
+        "News - Paid",
+        "News - Free",
+        "Newsstand - Paid",
+        "Newsstand - Free",
+        "Photo & Video - Paid",
+        "Photo & Video - Free",
+        "Productivity - Paid",
+        "Productivity - Free",
+        "Reference - Paid",
+        "Reference - Free",
+        "Social Networking - Paid",
+        "Social Networking - Free"
+    };
+
     public static void main(String[] args){
         String timeStamp2 = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
         System.out.println(timeStamp2);
@@ -25,9 +69,11 @@ public class Indexer {
 
     }
 
-    public static void index(ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
-        PrintWriter writer = new PrintWriter(timeStamp +".txt", "UTF-8");
+    public static void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
+        String timeStamp = categories[category] + " - " + new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        File dir = new File("C:\\AppDir");
+        File targetFile = new File(dir, timeStamp);
+        PrintWriter writer = new PrintWriter(targetFile, "UTF-8");
         for (AppObject target : list) {
             //System.out.println(target.getAllData());
             writer.print(target.getAllData() + "\n");

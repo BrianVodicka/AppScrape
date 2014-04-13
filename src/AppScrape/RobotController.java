@@ -75,9 +75,9 @@ public class RobotController extends  Robot{
     }
 
     public ArrayList<ArrayList<String>> begin(String target) throws InterruptedException, IOException, UnsupportedFlavorException {
-        //openItunes(target);
+        openItunes(target);
         getBearings();
-        //getIntoAppStore();
+        getIntoAppStore();
         moveIntoCategory();
         return urls;
     }
@@ -135,7 +135,7 @@ public class RobotController extends  Robot{
 
         robot.mouseMove(categories_x, categories_y);
         // start at 2 bc min move down is 30
-        for (int i = 1; i < 2; i++) { // 24
+        for (int i = 1; i < 12; i++) { // 24
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
             robot.mousePress(LEFT_CLICK);
@@ -215,6 +215,7 @@ public class RobotController extends  Robot{
         int y_offset = 225;
         robot.mouseMove(x_offset, y_offset);
         ArrayList<String> currentUrls = new ArrayList<>();
+        currentUrls.add(String.valueOf(counter));
         int count = 1;
         while (count < 24) { // 192
             for (int i = 0; i < 4; i++) { // 4
