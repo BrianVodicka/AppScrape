@@ -1,5 +1,6 @@
 package AppScrape;
 
+import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,8 +29,14 @@ public class AppObject {
     private int avgRating;
 
     public static void main(String[] args) {
+        Random rand = new Random();
         try {
-            Document doc = Jsoup.connect("https://itunes.apple.com/us/app/puppy-doctor/id786185899?mt=8").get();
+            Thread.sleep(rand.nextInt(100));
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        try {
+            Document doc = Jsoup.connect("https://itunes.apple.com/us/app/puppy-doctor/id786185899?mt=8").userAgent("Mozilla").get();
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
@@ -57,11 +65,29 @@ public class AppObject {
     }
 
     private void setup(){
+
+        String[] agents = {
+               "66.249.64.109 - crawl-66-249-64-109.googlebot.com",
+                "Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0",
+                "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20120101 Firefox/29.0",
+                "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/29.0",
+                "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET ",
+                "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)"
+        };
+
+        Random rand = new Random();
         Document doc = null;
         try {
-            doc = Jsoup.connect(url.toString()).get();
-        } catch (IOException e) {
+            Thread.sleep(rand.nextInt(400) + 200);
+        } catch (InterruptedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        try {
+            doc = Jsoup.connect(url.toString()).ignoreContentType(true).userAgent(agents[rand.nextInt(5)]).get();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings |
+            this.title = "Error requesting URL";
+            return;
         }
         this.title = getTitle(doc);
         this.category = getCategory(doc);

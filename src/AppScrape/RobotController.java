@@ -135,7 +135,8 @@ public class RobotController extends  Robot{
 
         robot.mouseMove(categories_x, categories_y);
         // start at 2 bc min move down is 30
-        for (int i = 1; i < 12; i++) { // 24
+        for (int i = 1; i < 2; i++) { // 24
+            long startTime = System.nanoTime();
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
             robot.mousePress(LEFT_CLICK);
@@ -162,6 +163,9 @@ public class RobotController extends  Robot{
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
             Thread.sleep(3000);
+            long endTime = System.nanoTime();
+            long elapsed = endTime - startTime;
+            System.out.println(elapsed / 1000000000);
         }
     }
 

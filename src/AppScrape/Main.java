@@ -91,6 +91,8 @@ public class Main {
                 if (tempFiles.size() < 2) {
                     return;
                 }
+
+                // TODO: change array list to array of tempFiles.size
                 File[] orderedTempFiles = new File[tempFiles.size()];
                 List<Integer> creationDates = new ArrayList<>();
                 int size = tempFiles.size();
@@ -103,6 +105,7 @@ public class Main {
                     for (File file : tempFiles) {
                         if (file.getName().contains(String.valueOf(creationDates.get(j))))
                             orderedTempFiles[j] = file;
+                        tempFiles.remove(file);
                     }
                 }
                 File mostRecent = orderedTempFiles[0];
@@ -110,13 +113,14 @@ public class Main {
                 FileReader fileReader = new FileReader(mostRecent);
                 BufferedReader reader = new BufferedReader(fileReader);
                 String readLine;
-                String targetFileName = "changes for " + categories[i];
                 File dir = new File("C:\\AppDir");
-                File targetFile = new File(dir, targetFileName);
+                File targetFile = new File(dir, "changes for " + categories[i]);
                 // todo: determine how many histories to go into for difference determining
                 while ((readLine = reader.readLine()) != null) {
+                    // TODO: instead of creating an app object, just get title from line?
                     AppObject app = new AppObject(readLine);
                     String title = app.getTitle();
+
                     FileReader secondFileReader = new FileReader(orderedTempFiles[1]);
                     BufferedReader secondReader = new BufferedReader(secondFileReader);
                     String secondReadLine;
