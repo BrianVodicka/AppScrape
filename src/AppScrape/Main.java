@@ -71,9 +71,11 @@ public class Main {
                 for(int j = 1; j < temp.size(); j++) {
                     String[] target = temp.get(j).split(" ");
                     System.out.println(target[0] + " " + Integer.parseInt(target[0]) + " " + target[1]);
-                    objects.add(new AppObject(target[1], Integer.parseInt(target[0])));
+                    String m = categories[i];
+                    objects.add(new AppObject(target[1], Integer.parseInt(target[0]), categories[i]));
                 }
-                Indexer.index(Integer.parseInt(temp.get(0)), objects);
+                System.out.println("Indexing " + categories[i] + "...");
+                Indexer.index(i, objects);
             }
 
 
@@ -98,14 +100,14 @@ public class Main {
                 int size = tempFiles.size();
                 for (int j = 0; j < size; j++) {
                     String name = tempFiles.get(j).getName();
-                    creationDates.add(Integer.valueOf(name.substring(name.length() - 14, name.length())));
+                    creationDates.add(Integer.valueOf(name.substring(name.length() - 8, name.length())));
                 }
                 Collections.sort(creationDates);
                 for (int j = 0; j < size; j++) {
                     for (File file : tempFiles) {
                         if (file.getName().contains(String.valueOf(creationDates.get(j))))
                             orderedTempFiles[j] = file;
-                        tempFiles.remove(file);
+                        //tempFiles.remove(file);
                     }
                 }
                 File mostRecent = orderedTempFiles[0];
@@ -127,7 +129,7 @@ public class Main {
                     while ((secondReadLine = secondReader.readLine()) != null) {
                         if (secondReadLine.contains(title)) {
                             String[] items = secondReadLine.split("~");
-                            int rank = Integer.valueOf(items[2].substring(6, items[2].length()));
+                            int rank = Integer.valueOf(items[2].substring(6, items[2].length() - 1));
                             PrintWriter writer = new PrintWriter(targetFile, "UTF-8");
                             int difference = app.getRank() - rank;
                             writer.write(app.getTitle() + " " + difference);

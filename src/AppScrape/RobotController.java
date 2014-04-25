@@ -164,8 +164,8 @@ public class RobotController extends  Robot{
             robot.mouseRelease(LEFT_CLICK);
             Thread.sleep(3000);
             long endTime = System.nanoTime();
-            long elapsed = endTime - startTime;
-            System.out.println(elapsed / 1000000000);
+            long elapsed = (endTime - startTime) / 1000000000;
+            System.out.println("Time wass: " + elapsed);
         }
     }
 

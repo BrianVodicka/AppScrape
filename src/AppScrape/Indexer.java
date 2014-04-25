@@ -71,12 +71,15 @@ public class Indexer {
 
     public static void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
         String timeStamp = categories[category] + " - " + new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
+        System.out.println(timeStamp);
         File dir = new File("C:\\AppDir");
         File targetFile = new File(dir, timeStamp);
         PrintWriter writer = new PrintWriter(targetFile, "UTF-8");
         for (AppObject target : list) {
             //System.out.println(target.getAllData());
-            writer.print(target.getAllData() + "\n");
+            String m = target.getBasicData();
+            String l = target.getCategory();
+            writer.print(target.getBasicData() + "\n");
         }
         writer.close();
     }

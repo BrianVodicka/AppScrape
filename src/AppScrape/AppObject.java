@@ -28,22 +28,8 @@ public class AppObject {
     private int totalRatings;
     private int avgRating;
 
-    public static void main(String[] args) {
-        Random rand = new Random();
-        try {
-            Thread.sleep(rand.nextInt(100));
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        try {
-            Document doc = Jsoup.connect("https://itunes.apple.com/us/app/puppy-doctor/id786185899?mt=8").userAgent("Mozilla").get();
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    public AppObject(String s, int rank) {
-        URL url = null;
+    public AppObject(String s, int rank, String category) {
+        URL url;
         try {
             url = new URL(s);
         } catch (MalformedURLException e) {
@@ -53,30 +39,37 @@ public class AppObject {
         }
         this.url = url;
         this.rank = rank;
-        setup();
+
+        String[] parts = s.split("app/");
+        String[] parts2 = parts[1].split("/");
+        this.title = parts2[0];
+        this.category = category;
+        int temp = 18;
+        /*String[] pieces = s.split("~");
+        this.title = pieces[1].substring(6, pieces[1].length());*/
     }
 
     public AppObject(String s) {
         String[] pieces = s.split("~");
         this.title = pieces[1].substring(6, pieces[1].length());
-        this.rank = Integer.valueOf(pieces[2].substring(5, pieces[2].length()));
+        this.rank = Integer.valueOf(pieces[2].substring(6, pieces[2].length() - 1));
         // wait is category necessary for comparison??
-        this.category = pieces[2].substring(9, pieces[3].length());
+        String m = pieces[3].substring(9, pieces[3].length());
+        this.category = pieces[3].substring(9, pieces[3].length());
     }
 
-    private void setup(){
-
+    private void fetchFromWeb(){
         String[] agents = {
-               "66.249.64.109 - crawl-66-249-64-109.googlebot.com",
+                "66.249.64.109 - crawl-66-249-64-109.googlebot.com",
                 "Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0",
                 "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20120101 Firefox/29.0",
                 "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/29.0",
                 "Mozilla/5.0 (compatible; MSIE 10.6; Windows NT 6.1; Trident/5.0; InfoPath.2; SLCC1; .NET CLR 3.0.4506.2152; .NET ",
                 "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)"
         };
-
         Random rand = new Random();
         Document doc = null;
+
         try {
             Thread.sleep(rand.nextInt(400) + 200);
         } catch (InterruptedException e) {
@@ -188,6 +181,10 @@ public class AppObject {
 
     public int getRank(){
         return this.rank;
+    }
+
+    public String getBasicData(){
+        return "~#title: " + this.getTitle() + " ~#rank:" + this.getRank() + " ~#category:" + this.getCategory();
     }
 
     public String getAllData(){
