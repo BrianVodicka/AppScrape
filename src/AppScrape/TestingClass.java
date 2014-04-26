@@ -55,12 +55,12 @@ public class TestingClass {
                 "Social Networking - Paid",
                 "Social Networking - Free"
         };
-        File dir = new File("C:\\AppDir\\tracking");
+        //File dir = new File("C:\\AppDir\\tracking");
         for (int i = 0; i < categories.length; i++){
-            File temp = new File(dir, categories[i]);
+            /*File temp = new File(dir, categories[i]);
             PrintWriter writer = new PrintWriter(temp);
             writer.print("");
-            writer.close();
+            writer.close();*/
         }
 
         /*String s = "~#title:Job Search ~#rank:1 ~#category:Business ~#releaseDate:Nov 08, 2013 ~#totalRatings:190 ~#avgRating:3 ~#url:https://itunes.apple.com/us/app/job-search/id309735670?mt=8";

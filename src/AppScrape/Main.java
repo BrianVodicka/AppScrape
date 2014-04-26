@@ -64,7 +64,7 @@ public class Main {
 
     public static void main(String[] args){
         try {
-            /*RobotController test = new RobotController();
+            RobotController test = new RobotController();
             urls = test.begin("C:/iTunes/iTunes.exe");
             for (int i = 0; i < urls.size(); i++) {
                 ArrayList<String> temp = urls.get(i);
@@ -77,7 +77,7 @@ public class Main {
                 }
                 System.out.println("Indexing " + categories[i] + "...");
                 Indexer.index(i, objects);
-            }*/
+            }
 
 
             //Movement charting...
@@ -100,8 +100,10 @@ public class Main {
 
                 // todo: determine how to remove items from tracking list after sufficient time
                 ArrayList<String> trackingList = new ArrayList<>();
+                File trackingFile = null;
                 for (File file : listOfTracking) {
                     if (file.getName().contains(categories[i])) {
+                        trackingFile = file;
                         FileReader fileReader = new FileReader(file);
                         BufferedReader reader = new BufferedReader(fileReader);
                         String readLine;
@@ -109,6 +111,7 @@ public class Main {
                             trackingList.add(readLine);
                     }
                 }
+                PrintWriter trackingWriter = new PrintWriter(trackingFile, "UTF-8");
 
                 // TODO: change array list to array of tempFiles.size
                 File[] orderedTempFiles = new File[tempFiles.size()];
@@ -133,9 +136,11 @@ public class Main {
                 FileReader fileReader = new FileReader(mostRecent);
                 BufferedReader reader = new BufferedReader(fileReader);
                 String readLine;
+
                 File dir = new File("C:\\AppDir\\changes");
                 File targetFile = new File(dir, "changes for " + categories[i] + " - " + new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
                 PrintWriter writer = new PrintWriter(targetFile, "UTF-8");
+
                 // todo: determine how many histories to go into for difference determining
                 while ((readLine = reader.readLine()) != null) {
                     // TODO: instead of creating an app object, just get title from line?
@@ -143,23 +148,7 @@ public class Main {
                     AppObject app = new AppObject(readLine);
                     String title = app.getTitle();
 
-                    compareWith(app, orderedTempFiles[2], writer, 2);
-
-                    /*FileReader secondFileReader = new FileReader(orderedTempFiles[1]);
-                    BufferedReader secondReader = new BufferedReader(secondFileReader);
-                    String secondReadLine;
-                    while ((secondReadLine = secondReader.readLine()) != null) {
-                        if (secondReadLine.contains(title)) {
-                            String[] items = secondReadLine.split("~");
-                            int rank = Integer.valueOf(items[2].substring(6, items[2].length() - 1));
-                            int difference = rank - app.getRank();
-                            if (difference < 3)
-                                continue;
-                            String m = app.getTitle() + " " + difference;
-                            writer.print("+" + difference + " over last day for: " + app.getTitle() + " " + app.getURL() + '\n');
-                            break;
-                        }
-                    }*/
+                    compareWith(app, orderedTempFiles[2], writer, trackingWriter, 1);
 
                     if (!trackingList.contains(title))
                         continue;
@@ -168,39 +157,31 @@ public class Main {
                     if (orderedTempFiles.length < 3)
                         continue;
                     if (orderedTempFiles.length == 3)
-                        compareWith(app, orderedTempFiles[3], writer, 3);
+                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, 2);
                     else if (orderedTempFiles.length == 4) {
-                        compareWith(app, orderedTempFiles[3], writer, 3);
-                        compareWith(app, orderedTempFiles[4], writer, 4);
+                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, 2);
+                        compareWith(app, orderedTempFiles[4], writer, trackingWriter, 3);
                     } else {
-                        compareWith(app, orderedTempFiles[3], writer, 3);
-                        compareWith(app, orderedTempFiles[4], writer, 4);
-                        compareWith(app, orderedTempFiles[5], writer, 5);
+                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, 2);
+                        compareWith(app, orderedTempFiles[4], writer, trackingWriter, 3);
+                        compareWith(app, orderedTempFiles[5], writer, trackingWriter, 4);
                     }
                 }
                 writer.close();
+                trackingWriter.close();
             }
-
-            // TODO FIX OBO ERROR
-            /*for (int i = 0; i < appObjects.length; i++) {
-                ArrayList<AppObject> temp = new ArrayList<>();
-                for (int j = 0; j < appObjects[i].length - 1; j++) {
-                    temp.add(appObjects[i][j]);
-                }
-                indexController.index(temp);
-            }*/
-        } /*catch (AWTException e) {
+        } catch (AWTException e) {
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (UnsupportedFlavorException e) {
             e.printStackTrace();
-        } */catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void compareWith(AppObject original, File readFile, PrintWriter writer, int time){
+    private static void compareWith(AppObject original, File readFile, PrintWriter writer, PrintWriter trackingWriter, int time){
         FileReader reader = null;
         File dir = new File("C:\\AppDir\\changes");
         try {
@@ -212,10 +193,14 @@ public class Main {
                 if (readLine.contains(title)) {
                     String[] items = readLine.split("~");
                     int rank = Integer.valueOf(items[2].substring(6, items[2].length() - 1));
-                    int difference = rank - original.getRank();
+                    int difference = original.getRank() - rank;
                     if (difference < 2)
                         continue;
-                    writer.print("+" + difference + " over last " + time + "day(s) for: " + original.getTitle() + " " + original.getURL() + '\n');
+
+                    // add to tracking list if good app
+                    if (difference > 30)
+                        trackingWriter.print(original.getTitle());
+                    writer.print("+" + difference + " over last " + time + " day(s) for: " + original.getTitle() + " " + original.getURL() + '\n');
                     break;
                 }
             }
