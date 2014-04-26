@@ -87,6 +87,10 @@ public class Main {
             File trackingFoler = new File("C:\\AppDir\\tracking");
             File listOfTracking[] = trackingFoler.listFiles();
 
+            File majorDir = new File("C:\\AppDir\\majorChanges");
+            File majorChanges = new File(majorDir, "major changes " + new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
+            PrintWriter majorWriter = new PrintWriter(majorChanges);
+
             for (int i = 0; i < categories.length; i++) {
                 ArrayList<File> tempFiles = new ArrayList<>();
                 for (File file : listOfFiles) {
@@ -148,7 +152,7 @@ public class Main {
                     AppObject app = new AppObject(readLine);
                     String title = app.getTitle();
 
-                    compareWith(app, orderedTempFiles[2], writer, trackingWriter, 1);
+                    compareWith(app, orderedTempFiles[2], writer, trackingWriter, majorWriter, 1);
 
                     if (!trackingList.contains(title))
                         continue;
@@ -157,19 +161,20 @@ public class Main {
                     if (orderedTempFiles.length < 3)
                         continue;
                     if (orderedTempFiles.length == 3)
-                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, 2);
+                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, majorWriter, 2);
                     else if (orderedTempFiles.length == 4) {
-                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, 2);
-                        compareWith(app, orderedTempFiles[4], writer, trackingWriter, 3);
+                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, majorWriter, 2);
+                        compareWith(app, orderedTempFiles[4], writer, trackingWriter, majorWriter, 3);
                     } else {
-                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, 2);
-                        compareWith(app, orderedTempFiles[4], writer, trackingWriter, 3);
-                        compareWith(app, orderedTempFiles[5], writer, trackingWriter, 4);
+                        compareWith(app, orderedTempFiles[3], writer, trackingWriter, majorWriter, 2);
+                        compareWith(app, orderedTempFiles[4], writer, trackingWriter, majorWriter, 3);
+                        compareWith(app, orderedTempFiles[5], writer, trackingWriter, majorWriter, 4);
                     }
                 }
                 writer.close();
                 trackingWriter.close();
             }
+            majorWriter.close();
         } catch (AWTException e) {
 
         } catch (InterruptedException e) {
@@ -181,7 +186,7 @@ public class Main {
         }
     }
 
-    private static void compareWith(AppObject original, File readFile, PrintWriter writer, PrintWriter trackingWriter, int time){
+    private static void compareWith(AppObject original, File readFile, PrintWriter writer, PrintWriter trackingWriter, PrintWriter majorWriter, int time){
         FileReader reader = null;
         File dir = new File("C:\\AppDir\\changes");
         try {
@@ -196,6 +201,9 @@ public class Main {
                     int difference = original.getRank() - rank;
                     if (difference < 2)
                         continue;
+
+                    if (difference > 15)
+                        majorWriter.print("+" + difference + " over last " + time + " day(s) for: " + original.getTitle() + " " + original.getURL() + '\n');
 
                     // add to tracking list if good app
                     if (difference > 30)

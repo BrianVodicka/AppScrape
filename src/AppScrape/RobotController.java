@@ -135,7 +135,7 @@ public class RobotController extends  Robot{
 
         robot.mouseMove(categories_x, categories_y);
         // start at 2 bc min move down is 30
-        for (int i = 1; i < 2; i++) { // 24
+        for (int i = 4; i < 24; i++) { // 24
             long startTime = System.nanoTime();
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
@@ -216,15 +216,19 @@ public class RobotController extends  Robot{
 
     private void getTopApps(int counter) throws IOException, UnsupportedFlavorException, InterruptedException {
         int x_offset = screenSize.width / 2 - 720;
-        int y_offset = 225;
+        int y_offset = 235;
         robot.mouseMove(x_offset, y_offset);
         ArrayList<String> currentUrls = new ArrayList<>();
         currentUrls.add(String.valueOf(counter));
         int count = 1;
-        while (count < 24) { // 192
+        while (count < 192) { // 192
             for (int i = 0; i < 4; i++) { // 4
-                y_offset = y_offset + 196 * i;
+                y_offset = y_offset + 204 * i;
                 for (int j = 0; j < 12; j++) { // 12
+                    boolean valid = checkAppValid(x_offset + 130 * j, y_offset);
+                    if (!valid) {
+                        y_offset = repositionMouse(x_offset + 130 * j, y_offset);
+                    }
                     quickCopy(x_offset + 130 * j, y_offset);
                     String result = getClipboard();
                     if(!currentUrls.contains(result))
@@ -240,9 +244,8 @@ public class RobotController extends  Robot{
                 y_offset = 225;
             }
 
-
             int m = 0;
-            while (m < 20) {
+            while (m < 21) {
                 robot.keyPress(KeyEvent.VK_DOWN);
                 robot.keyRelease(KeyEvent.VK_DOWN);
                 m++;
@@ -358,7 +361,27 @@ public class RobotController extends  Robot{
         robot.mousePress(LEFT_CLICK); // copy url
         robot.mouseRelease(LEFT_CLICK);
         Thread.sleep(300);
+    }
 
+    private boolean checkAppValid(int x, int y){
+        //int backgroundColors[] = {236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248};
+        int color = robot.getPixelColor(x, y).getRed();
+        if (color >= 236 && color <=248) {
+            Color col = robot.getPixelColor(x,y);
+            if (col.getRed() == col.getBlue() && col.getBlue() == col.getGreen()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int repositionMouse(int x, int y){
+        int plus = 0;
+        while(!checkAppValid(x,y + plus)) {
+            plus += 2;
+        }
+
+        return y + plus;
     }
 
 }
