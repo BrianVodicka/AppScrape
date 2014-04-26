@@ -6,7 +6,7 @@
     <ignored path=".idea/workspace.xml" />
     <file path="/Robot.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1393037924606" ignored="false" />
     <file path="/Dummy.txt" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1393037505760" ignored="false" />
-    <file path="/Main.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398486988406" ignored="false" />
+    <file path="/Main.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398489674020" ignored="false" />
     <file path="/fragment.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1397362712778" ignored="false" />
     <file path="/RobotController.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398465073351" ignored="false" />
     <file path="/AppObject.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398468513008" ignored="false" />
@@ -77,7 +77,7 @@
       <file leaf-file-name="Main.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/AppScrape/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="100" column="95" selection-start="3411" selection-end="3411" vertical-scroll-proportion="0.46140653">
+            <state line="177" column="70" selection-start="7801" selection-end="7801" vertical-scroll-proportion="-0.4425386">
               <folding />
             </state>
           </provider>
@@ -659,7 +659,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppScrape/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="100" column="95" selection-start="3411" selection-end="3411" vertical-scroll-proportion="0.46140653">
+        <state line="177" column="70" selection-start="7801" selection-end="7801" vertical-scroll-proportion="-0.4425386">
           <folding />
         </state>
       </provider>

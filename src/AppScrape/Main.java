@@ -139,10 +139,13 @@ public class Main {
                 // todo: determine how many histories to go into for difference determining
                 while ((readLine = reader.readLine()) != null) {
                     // TODO: instead of creating an app object, just get title from line?
+                    // TODO: different methods for tracking list and typical app?
                     AppObject app = new AppObject(readLine);
                     String title = app.getTitle();
 
-                    FileReader secondFileReader = new FileReader(orderedTempFiles[1]);
+                    compareWith(app, orderedTempFiles[2], writer, 2);
+
+                    /*FileReader secondFileReader = new FileReader(orderedTempFiles[1]);
                     BufferedReader secondReader = new BufferedReader(secondFileReader);
                     String secondReadLine;
                     while ((secondReadLine = secondReader.readLine()) != null) {
@@ -156,6 +159,23 @@ public class Main {
                             writer.print("+" + difference + " over last day for: " + app.getTitle() + " " + app.getURL() + '\n');
                             break;
                         }
+                    }*/
+
+                    if (!trackingList.contains(title))
+                        continue;
+
+                    // search extra because it's on the tracking list ----
+                    if (orderedTempFiles.length < 3)
+                        continue;
+                    if (orderedTempFiles.length == 3)
+                        compareWith(app, orderedTempFiles[3], writer, 3);
+                    else if (orderedTempFiles.length == 4) {
+                        compareWith(app, orderedTempFiles[3], writer, 3);
+                        compareWith(app, orderedTempFiles[4], writer, 4);
+                    } else {
+                        compareWith(app, orderedTempFiles[3], writer, 3);
+                        compareWith(app, orderedTempFiles[4], writer, 4);
+                        compareWith(app, orderedTempFiles[5], writer, 5);
                     }
                 }
                 writer.close();
@@ -177,6 +197,32 @@ public class Main {
             e.printStackTrace();
         } */catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private static void compareWith(AppObject original, File readFile, PrintWriter writer, int time){
+        FileReader reader = null;
+        File dir = new File("C:\\AppDir\\changes");
+        try {
+            reader = new FileReader(readFile);
+            BufferedReader fileReader = new BufferedReader(reader);
+            String readLine;
+            String title = original.getTitle();
+            while ((readLine = fileReader.readLine()) != null) {
+                if (readLine.contains(title)) {
+                    String[] items = readLine.split("~");
+                    int rank = Integer.valueOf(items[2].substring(6, items[2].length() - 1));
+                    int difference = rank - original.getRank();
+                    if (difference < 2)
+                        continue;
+                    writer.print("+" + difference + " over last " + time + "day(s) for: " + original.getTitle() + " " + original.getURL() + '\n');
+                    break;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
