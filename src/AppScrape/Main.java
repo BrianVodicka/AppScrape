@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -63,7 +64,7 @@ public class Main {
 
     public static void main(String[] args){
         try {
-            RobotController test = new RobotController();
+            /*RobotController test = new RobotController();
             urls = test.begin("C:/iTunes/iTunes.exe");
             for (int i = 0; i < urls.size(); i++) {
                 ArrayList<String> temp = urls.get(i);
@@ -76,12 +77,15 @@ public class Main {
                 }
                 System.out.println("Indexing " + categories[i] + "...");
                 Indexer.index(i, objects);
-            }
+            }*/
 
 
             //Movement charting...
             File folder = new File("C:\\AppDir");
             File listOfFiles[] = folder.listFiles();
+
+            File trackingFoler = new File("C:\\AppDir\\tracking");
+            File listOfTracking[] = trackingFoler.listFiles();
 
             for (int i = 0; i < categories.length; i++) {
                 ArrayList<File> tempFiles = new ArrayList<>();
@@ -94,12 +98,26 @@ public class Main {
                     return;
                 }
 
+                // todo: determine how to remove items from tracking list after sufficient time
+                ArrayList<String> trackingList = new ArrayList<>();
+                for (File file : listOfTracking) {
+                    if (file.getName().contains(categories[i])) {
+                        FileReader fileReader = new FileReader(file);
+                        BufferedReader reader = new BufferedReader(fileReader);
+                        String readLine;
+                        while ((readLine = reader.readLine()) != null)
+                            trackingList.add(readLine);
+                    }
+                }
+
                 // TODO: change array list to array of tempFiles.size
                 File[] orderedTempFiles = new File[tempFiles.size()];
                 List<Integer> creationDates = new ArrayList<>();
                 int size = tempFiles.size();
                 for (int j = 0; j < size; j++) {
                     String name = tempFiles.get(j).getName();
+                    String s = name.substring(name.length() - 8, name.length());
+                    int mi = 4;
                     creationDates.add(Integer.valueOf(name.substring(name.length() - 8, name.length())));
                 }
                 Collections.sort(creationDates);
@@ -115,8 +133,9 @@ public class Main {
                 FileReader fileReader = new FileReader(mostRecent);
                 BufferedReader reader = new BufferedReader(fileReader);
                 String readLine;
-                File dir = new File("C:\\AppDir");
-                File targetFile = new File(dir, "changes for " + categories[i]);
+                File dir = new File("C:\\AppDir\\changes");
+                File targetFile = new File(dir, "changes for " + categories[i] + " - " + new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime()));
+                PrintWriter writer = new PrintWriter(targetFile, "UTF-8");
                 // todo: determine how many histories to go into for difference determining
                 while ((readLine = reader.readLine()) != null) {
                     // TODO: instead of creating an app object, just get title from line?
@@ -130,13 +149,16 @@ public class Main {
                         if (secondReadLine.contains(title)) {
                             String[] items = secondReadLine.split("~");
                             int rank = Integer.valueOf(items[2].substring(6, items[2].length() - 1));
-                            PrintWriter writer = new PrintWriter(targetFile, "UTF-8");
-                            int difference = app.getRank() - rank;
-                            writer.write(app.getTitle() + " " + difference);
+                            int difference = rank - app.getRank();
+                            if (difference < 3)
+                                continue;
+                            String m = app.getTitle() + " " + difference;
+                            writer.print("+" + difference + " over last day for: " + app.getTitle() + " " + app.getURL() + '\n');
                             break;
                         }
                     }
                 }
+                writer.close();
             }
 
             // TODO FIX OBO ERROR
@@ -147,13 +169,13 @@ public class Main {
                 }
                 indexController.index(temp);
             }*/
-        } catch (AWTException e) {
+        } /*catch (AWTException e) {
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (UnsupportedFlavorException e) {
             e.printStackTrace();
-        } catch (IOException e) {
+        } */catch (IOException e) {
             e.printStackTrace();
         }
     }
