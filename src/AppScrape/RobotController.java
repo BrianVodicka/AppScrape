@@ -75,9 +75,9 @@ public class RobotController extends  Robot{
     }
 
     public ArrayList<ArrayList<String>> begin(String target) throws InterruptedException, IOException, UnsupportedFlavorException {
-        openItunes(target);
+        //openItunes(target);
         getBearings();
-        getIntoAppStore();
+        //getIntoAppStore();
         moveIntoCategory();
         return urls;
     }
@@ -135,7 +135,7 @@ public class RobotController extends  Robot{
 
         robot.mouseMove(categories_x, categories_y);
         // start at 2 bc min move down is 30
-        for (int i = 4; i < 24; i++) { // 24
+        for (int i = 1; i < 24; i++) { // 24
             long startTime = System.nanoTime();
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
@@ -171,50 +171,30 @@ public class RobotController extends  Robot{
 
     private void getPaidApps(int counter, boolean free) throws InterruptedException, IOException, UnsupportedFlavorException {
 
-        // scrolls screen down to find free apps link
-        if (free) {
-            int m = 0;
-            while (m < 15) {
-                robot.keyPress(KeyEvent.VK_DOWN);
-                Thread.sleep(10);
-                robot.keyRelease(KeyEvent.VK_DOWN);
-                m++;
-            }
-            Thread.sleep(3500);
-        }
-
         // set up variables for loop to find link
-        int categories_x = screenSize.width / 2 + 565;
+        int categories_x = 1526;
         int add = 0;
         boolean found = false;
 
-        while (!found){
-            int y = findTopAppLink(categories_x);
-            Thread.sleep(1000);
-            if (y == -1)
-                return;
-            copyToClipboard(categories_x, y);
-            String temp = getClipboard();
-            System.out.println(temp);
-            String substring = "https://itunes.apple.com/WebObjects/MZStore.woa/wa";
-            if (temp.contains(substring)) {
-                robot.mouseMove(categories_x, y);
-                robot.mousePress(LEFT_CLICK);
-                robot.mouseRelease(LEFT_CLICK);
-                Thread.sleep(7000);
-                getTopApps(counter); // finds paid apps
-                found = true;
-            } else {
-                add += 3;
-                if (add > 100) {
-                    return;
-                }
-                categories_x += add;
-            }
-        }
+        Point p = findTopAppLink(categories_x);
+        Thread.sleep(1000);
+        if (p == null)
+            return;
+
+        robot.mouseMove(p.x, p.y);
+        robot.mousePress(LEFT_CLICK);
+        robot.mouseRelease(LEFT_CLICK);
+        Thread.sleep(7000);
+        getTopApps(counter, free);
     }
 
-    private void getTopApps(int counter) throws IOException, UnsupportedFlavorException, InterruptedException {
+    private void getTopApps(int counter, boolean free) throws IOException, UnsupportedFlavorException, InterruptedException {
+        if (free == true) {
+            robot.mouseMove(screenSize.width / 2, 140);
+            robot.mousePress(LEFT_CLICK);
+            robot.mouseRelease(LEFT_CLICK);
+            Thread.sleep(6000);
+        }
         int x_offset = screenSize.width / 2 - 720;
         int y_offset = 235;
         robot.mouseMove(x_offset, y_offset);
@@ -225,7 +205,7 @@ public class RobotController extends  Robot{
             for (int i = 0; i < 4; i++) { // 4
                 y_offset = y_offset + 204 * i;
                 for (int j = 0; j < 12; j++) { // 12
-                    boolean valid = checkAppValid(x_offset + 130 * j, y_offset);
+                    boolean valid = checkBackground(x_offset + 130 * j, y_offset);
                     if (!valid) {
                         y_offset = repositionMouse(x_offset + 130 * j, y_offset);
                     }
@@ -263,39 +243,51 @@ public class RobotController extends  Robot{
         Thread.sleep(7000);
     }
 
-    private int findTopAppLink(int x_pos) {
-        int y_pos = 675;
-
+    private Point findTopAppLink(int x_pos) throws InterruptedException {
+        int y_pos = 675; // 675
+        boolean found = false;
         // TODO: make memory usage better by only capturing part of the screen
         BufferedImage screen = robot.createScreenCapture(new Rectangle(screenSize));
-        for (; y_pos < 1000; y_pos += 3) {
-            if (testColor(screen, y_pos, x_pos))
-                break;
+        while (!found) {
+            for (; y_pos < 1000; y_pos += 3) { // 1000
+                robot.mouseMove(x_pos, y_pos);
+                Thread.sleep(10);
+                if (checkBackground(x_pos, y_pos))
+                    found = checkAppValid(x_pos, y_pos - 26);
+                if (found)
+                    return new Point(x_pos, y_pos - 26);
+            }
+            Thread.sleep(600);
+            x_pos += 3;
         }
-        for (int i = 2; i < 150; i += 2) {
+        /*for (int i = 2; i < 125; i += 2) {
             if (checkGrey(screen, y_pos - i))
                 return y_pos - i - 26;
-        }
-        return -1;
+        }*/
+        // TODO: throw app not found exception
+        return null;
     }
 
     private boolean testColor(BufferedImage screen, int y_pos, int x_pos) {
-        int temp = screen.getRGB(x_pos, y_pos);
-        Color c = new Color(temp);
-        if (!testGrey(c)) {
+        //robot.mouseMove(x_pos, y_pos);
+        ///int temp = screen.getRGB(x_pos, y_pos);
+        //Color c = new Color(temp);
+        if (checkAppValid(x_pos, y_pos)) {
             robot.mouseMove(x_pos, y_pos);
-            int tempb = screen.getRGB(x_pos, y_pos - 5);
+            /*int tempb = screen.getRGB(x_pos, y_pos - 5);
             int tempe = screen.getRGB(x_pos, y_pos + 5);
             int tempc = screen.getRGB(x_pos, y_pos - 10);
             int tempd = screen.getRGB(x_pos, y_pos + 10);
             if (!testGrey(new Color(tempb)) && !testGrey(new Color(tempc)) && !testGrey(new Color(tempd)) && !testGrey(new Color(tempe)))
-                return true;
+                return true;*/
+            return true;
         }
         return false;
     }
 
+    // currently unused
     private boolean checkGrey(BufferedImage screen, int test_position) {
-        int x_pos = screenSize.width / 2 + 564;
+        int x_pos = screenSize.width / 2 + 569;
         int y_pos = test_position;
         int temp = screen.getRGB(x_pos, y_pos);
         Color c = new Color(temp);
@@ -310,6 +302,7 @@ public class RobotController extends  Robot{
         return false;
     }
 
+    // currently unused
     private boolean testGrey(Color c) {
         if (c.getRed() == c.getGreen() && c.getRed() == c.getBlue())
             return true;
@@ -363,7 +356,7 @@ public class RobotController extends  Robot{
         Thread.sleep(300);
     }
 
-    private boolean checkAppValid(int x, int y){
+    private boolean checkBackground(int x, int y){
         //int backgroundColors[] = {236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248};
         int color = robot.getPixelColor(x, y).getRed();
         if (color >= 236 && color <=248) {
@@ -375,9 +368,36 @@ public class RobotController extends  Robot{
         return true;
     }
 
+    private boolean checkAppValid(int x, int y) {
+        //int backgroundColors[] = {236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248};
+        try {
+        if (!checkBackground(x, y))
+            return false;
+        copyToClipboard(x, y);
+        String temp = getClipboard();
+        System.out.println(temp);
+        String substring = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewTop";
+        if (temp.contains(substring)) {
+            //robot.mouseMove(x, y);
+            //robot.mousePress(LEFT_CLICK);
+            //robot.mouseRelease(LEFT_CLICK);
+            //Thread.sleep(7000);
+            //getTopApps(counter, free); // finds paid apps
+            return true;
+        }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (UnsupportedFlavorException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private int repositionMouse(int x, int y){
         int plus = 0;
-        while(!checkAppValid(x,y + plus)) {
+        while(!checkBackground(x, y + plus)) {
             plus += 2;
         }
 

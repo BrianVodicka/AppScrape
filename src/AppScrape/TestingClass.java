@@ -17,10 +17,11 @@ public class TestingClass {
         RobotController robot = new RobotController();
         boolean tr = true;
         while (tr) {
-            /*Point p = MouseInfo.getPointerInfo().getLocation();
+            Point p = MouseInfo.getPointerInfo().getLocation();
 
-            int color = robot.getPixelColor(p.x,p.y).getRed();
-            if (color >= 240 && color <=247) {
+            Color color = robot.getPixelColor(p.x,p.y);
+            System.out.println(color);
+            /*if (color >= 240 && color <=247) {
                 Color col = robot.getPixelColor(p.x,p.y);
                 if (!(col.getRed() == col.getBlue()) || !(col.getBlue() == col.getGreen())){
                     System.out.println(robot.getPixelColor(p.x,p.y));
@@ -31,7 +32,7 @@ public class TestingClass {
             }*/
 
             System.out.println(MouseInfo.getPointerInfo().getLocation());
-            Thread.sleep(250);
+            Thread.sleep(1000);
         }
         //File dir = new File("C:\\AppDir\\tracking");
         //for (int i = 0; i < categories.length; i++){
