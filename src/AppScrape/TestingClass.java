@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Brian
@@ -16,7 +19,12 @@ public class TestingClass {
     public static void main(String[] args) throws FileNotFoundException, AWTException, InterruptedException {
         RobotController robot = new RobotController();
         boolean tr = true;
-        while (tr) {
+
+        Gson gson = new GsonBuilder().create();
+        gson.toJson("Hello", System.out);
+        gson.toJson(123, System.out);
+
+        /*while (tr) {
             Point p = MouseInfo.getPointerInfo().getLocation();
 
             Color color = robot.getPixelColor(p.x,p.y);
@@ -31,9 +39,9 @@ public class TestingClass {
                 System.out.println(robot.getPixelColor(p.x,p.y));
             }*/
 
-            System.out.println(MouseInfo.getPointerInfo().getLocation());
-            Thread.sleep(1000);
-        }
+            //System.out.println(MouseInfo.getPointerInfo().getLocation());
+            //Thread.sleep(1000);
+        //}
         //File dir = new File("C:\\AppDir\\tracking");
         //for (int i = 0; i < categories.length; i++){
             /*File temp = new File(dir, categories[i]);

@@ -12,6 +12,10 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Random;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Brian
@@ -27,6 +31,12 @@ public class AppObject {
     private String releaseDate; // TODO: maybe change type to URL?
     private int totalRatings;
     private int avgRating;
+
+    private int oneDayChange;
+    private int twoDayChange;
+    private int threeDayChange;
+    private int fourDayChange;
+    private int fiveDayChange;
 
     public AppObject(String s, int rank, String category) {
         URL url;
@@ -154,6 +164,27 @@ public class AppObject {
             }
         }
     }
+
+    private JsonObject createJsonObject(){
+        JsonObject object = new JsonObject();
+        object.addProperty("NAME", this.title);
+        object.addProperty("RANK", this.rank);
+        object.addProperty("CATEGORY", this.category);
+        object.addProperty("URL", String.valueOf(this.url));
+
+        JsonObject changes = new JsonObject();
+        changes.addProperty("1 day change", this.oneDayChange);
+        changes.addProperty("2 day change", this.twoDayChange);
+        changes.addProperty("3 day change", this.threeDayChange);
+        changes.addProperty("4 day change", this.fourDayChange);
+        changes.addProperty("5 day change", this.fiveDayChange);
+
+        object.add("CHANGES", changes);
+
+        return object;
+    }
+
+
 
     public URL getURL(){
         return this.url;
