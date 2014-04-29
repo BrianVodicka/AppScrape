@@ -1,63 +1,62 @@
 package AppScrape;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import java.sql.*;
+
 /**
- * Created with IntelliJ IDEA.
  * User: Brian
  * Date: 2/24/14
- * Time: 12:28 AM
- * To change this template use File | Settings | File Templates.
  */
 public class Indexer {
 
+    private Connection c;
+
     static final String[] categories = {
-        "Books - Paid",
-        "Books - Free",
-        "Business - Paid",
-        "Business - Free",
-        "Catalogs - Paid",
-        "Catalogs - Free",
-        "Education - Paid",
-        "Education - Free",
-        "Entertainment - Paid",
-        "Entertainment - Free",
-        "Finance - Paid",
-        "Finance - Free",
-        "Food & Drink - Paid",
-        "Food & Drink - Free",
-        "Games - Paid",
-        "Games - Free",
-        "Health & Fitness - Paid",
-        "Health & Fitness - Free",
-        "Kids - Paid",
-        "Kids - Free",
-        "Lifestyle - Paid",
-        "Lifestyle - Free",
-        "Medical - Paid",
-        "Medical - Free",
-        "Music - Paid",
-        "Music - Free",
-        "Navigation - Paid",
-        "Navigation - Free",
-        "News - Paid",
-        "News - Free",
-        "Newsstand - Paid",
-        "Newsstand - Free",
-        "Photo & Video - Paid",
-        "Photo & Video - Free",
-        "Productivity - Paid",
-        "Productivity - Free",
-        "Reference - Paid",
-        "Reference - Free",
-        "Social Networking - Paid",
-        "Social Networking - Free"
+        "BooksPaid",
+        "BooksFree",
+        "BusinessPaid",
+        "BusinessFree",
+        "CatalogsPaid",
+        "CatalogsFree",
+        "EducationPaid",
+        "EducationFree",
+        "EntertainmentPaid",
+        "EntertainmentFree",
+        "FinancePaid",
+        "FinanceFree",
+        "FoodPaid",
+        "FoodFree",
+        "GamesPaid",
+        "GamesFree",
+        "HealthPaid",
+        "HealthFree",
+        "KidsPaid",
+        "KidsFree",
+        "LifestylePaid",
+        "LifestyleFree",
+        "MedicalPaid",
+        "MedicalFree",
+        "MusicPaid",
+        "MusicFree",
+        "NavigationPaid",
+        "NavigationFree",
+        "NewsPaid",
+        "NewsFree",
+        "NewsstandPaid",
+        "NewsstandFree",
+        "PhotoVideoPaid",
+        "PhotoVideoFree",
+        "ProductivityPaid",
+        "ProductivityFree",
+        "ReferencePaid",
+        "ReferenceFree",
+        "SocialNetworkingPaid",
+        "SocialNetworkingFree"
     };
 
     public static void main(String[] args){
@@ -66,22 +65,49 @@ public class Indexer {
     }
 
     public Indexer(){
-
+        c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:C:/AppDir/apps/masterDB.db");
+            c.setAutoCommit(false);
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage());
+        }
     }
 
-    public static void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
-        String timeStamp = categories[category] + " - " + new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
-        System.out.println(timeStamp);
-        File dir = new File("C:\\AppDir");
-        File targetFile = new File(dir, timeStamp);
-        PrintWriter writer = new PrintWriter(targetFile, "UTF-8");
-        for (AppObject target : list) {
-            //System.out.println(target.getAllData());
-            String m = target.getBasicData();
-            String l = target.getCategory();
-            writer.print(target.getBasicData() + "\n");
+    public void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
+        Statement stmt = null;
+        try {
+            for (AppObject target : list) {
+                stmt = c.createStatement();
+                String query = ("SELECT name FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
+                ResultSet rs = stmt.executeQuery(query);
+                int size = 0;
+                while( rs.next() ) {
+                    size++;
+                }
+                rs = stmt.executeQuery(query);
+                if(size == 1) {
+                    Integer oldRank = rs.getInt("rank");
+                    int newRank = target.getRank();
+                    int diff = newRank - oldRank;
+                    query = ("UPDATE name FROM " + categories[category] + " SET today = " + newRank + ", yesterday = " + diff + " WHERE name = '" + target.getTitle() + "';");
+                    stmt.executeQuery(query);
+                } else if (size == 0) {
+                    query = ("INSERT INTO " + categories[category] + " (name, url, rank) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank());
+                    stmt.executeQuery(query);
+                } else {
+                    throw new Exception("Multiple apps found for title: " + target.getTitle());
+                }
+
+            }
+            stmt.close();
+            c.commit();
+        } catch (SQLException e) {
+            e.getStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        writer.close();
     }
 
 
