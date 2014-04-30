@@ -155,7 +155,7 @@ public class RobotController extends  Robot{
 
             Point position = null;
             position = getPaidApps(i, position);
-            //getPaidApps(i, position);
+            getPaidApps(i, position);
 
             robot.mouseMove(20, 100);
             Thread.sleep(20);
@@ -174,7 +174,7 @@ public class RobotController extends  Robot{
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
             Thread.sleep(7000);
-            getTopApps(counter, link_pos);
+            getTopApps(counter, link_pos, 1);
             return null;
         }
 
@@ -192,11 +192,11 @@ public class RobotController extends  Robot{
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
         Thread.sleep(7000);
-        getTopApps(counter, link_pos);
+        getTopApps(counter, link_pos, 0);
         return p;
     }
 
-    private void getTopApps(int counter, Point link_pos) throws IOException, UnsupportedFlavorException, InterruptedException {
+    private void getTopApps(int counter, Point link_pos, int free) throws IOException, UnsupportedFlavorException, InterruptedException {
         if (link_pos != null) {
             robot.mouseMove(screenSize.width / 2, 140);
             robot.mousePress(LEFT_CLICK);
@@ -240,6 +240,12 @@ public class RobotController extends  Robot{
             }
             Thread.sleep(850);
         }
+
+        // start new thread to index these apps
+        Indexer indexer = new Indexer(counter + free - 1, currentUrls);
+        Thread t = new Thread(indexer);
+        t.start();
+
         System.out.println("SIZE IS:" + currentUrls.size() + "List is: " + counter);
         urls.add(currentUrls);
         globalCounter++;
@@ -386,11 +392,6 @@ public class RobotController extends  Robot{
         System.out.println(temp);
         String substring = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewTop";
         if (temp.contains(substring)) {
-            //robot.mouseMove(x, y);
-            //robot.mousePress(LEFT_CLICK);
-            //robot.mouseRelease(LEFT_CLICK);
-            //Thread.sleep(7000);
-            //getTopApps(counter, free); // finds paid apps
             return true;
         }
         } catch (InterruptedException e) {

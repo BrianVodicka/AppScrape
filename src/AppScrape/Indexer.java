@@ -2,9 +2,7 @@ package AppScrape;
 
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import java.sql.*;
 
@@ -12,9 +10,11 @@ import java.sql.*;
  * User: Brian
  * Date: 2/24/14
  */
-public class Indexer {
+public class Indexer implements Runnable{
 
     //private static Connection c;
+    private int category;
+    private ArrayList<AppObject> objectList;
 
     static final String[] categories = {
         "BooksPaid",
@@ -59,12 +59,17 @@ public class Indexer {
         "SocialNetworkingFree"
     };
 
-    public static void main(String[] args){
-        String timeStamp2 = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance().getTime());
-        System.out.println(timeStamp2);
-    }
+    public Indexer(int category, ArrayList<String> objectList){
+        this.category = category;
 
-    public Indexer(){
+        ArrayList<AppObject> objects = new ArrayList<>();
+        for(int j = 1; j < objectList.size(); j++) {
+            String[] target = objectList.get(j).split(" ");
+            //System.out.println(target[0] + " " + Integer.parseInt(target[0]) + " " + target[1]);
+            objects.add(new AppObject(target[1], Integer.parseInt(target[0]), categories[category]));
+        }
+
+        this.objectList = objects;
         /*c = null;
         try {
             Class.forName("org.sqlite.JDBC");
@@ -75,30 +80,26 @@ public class Indexer {
         }*/
     }
 
-    public static void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
+    public void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
         try {
             Connection c = null;
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:C:/AppDir/apps/masterDB.db");
             c.setAutoCommit(false);
+            Statement stmt = null;
+            String query;
             for (AppObject target : list) {
                 try {
-                    Statement stmt = null;
-                    stmt = c.createStatement();
-                    System.out.println(target.getTitle());
-                    /*String query = ("SELECT name FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
-                    PreparedStatement statement = c.prepareStatement(query);
-                    ResultSet rs = statement.getGeneratedKeys();
-                    int size = 0;
-                    while( rs.next() ) {
-                        size++;
-                        System.out.println(size);
-                    }*/
 
-                    String query = ("SELECT COUNT(*) AS total FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
+                    stmt = c.createStatement();
+
+                    query = ("SELECT COUNT(*) AS total FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
                     ResultSet rs = stmt.executeQuery(query);
                     int i = rs.getInt("total");
                     rs.close();
+
+                    query = ("UPDATE " + categories[category] + " SET updated = 0;");
+                    stmt.executeUpdate(query);
 
                     query = ("SELECT * FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
 
@@ -107,7 +108,7 @@ public class Indexer {
                         System.out.println("-- Size 1 -- \n -- For: " + target.getTitle());
                         Integer oldRank = ss.getInt("today");
                         int newRank = target.getRank();
-                        int diff = newRank - oldRank;
+                        int diff = oldRank - newRank;
                         query = ("UPDATE " + categories[category] + " SET today = " + newRank + ", yesterday = " + diff + " WHERE name = '" + target.getTitle() + "';");
                         PreparedStatement sql = c.prepareStatement(query);
                         sql.executeUpdate();
@@ -129,8 +130,22 @@ public class Indexer {
                         e.printStackTrace();
                 }
             }
+            // for all leftover apps...
+            stmt = c.createStatement();
+            query = ("UPDATE " + categories[category] + " SET today = 201 WHERE updated = " + 0 + ";");
+            stmt.executeUpdate(query);
+            stmt.close();
             c.close();
         } catch (SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            index(this.category, this.objectList);
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
     }
