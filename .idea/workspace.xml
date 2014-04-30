@@ -8,9 +8,9 @@
     <file path="/Dummy.txt" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1393037505760" ignored="false" />
     <file path="/Main.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398817394634" ignored="false" />
     <file path="/fragment.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1397362712778" ignored="false" />
-    <file path="/RobotController.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398840540398" ignored="false" />
-    <file path="/AppObject.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398630248064" ignored="false" />
-    <file path="/Indexer.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398840746572" ignored="false" />
+    <file path="/RobotController.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398843804933" ignored="false" />
+    <file path="/AppObject.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398891643227" ignored="false" />
+    <file path="/Indexer.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398892779053" ignored="false" />
     <file path="$USER_HOME$/Desktop/prog7/src/assignment/Macro.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1393718192952" ignored="false" />
     <file path="/Macro.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1393718111817" ignored="false" />
     <file path="/TestingClass.java" changelist="b4bb5841-aa74-4289-8362-4cc644c4cc63" time="1398827382723" ignored="false" />
@@ -66,87 +66,6 @@
       </breakpoint>
     </breakpoint_any>
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
-    <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/AppScrape/Indexer.java" line="62" class="AppScrape.Indexer" package="AppScrape">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/AppScrape/Indexer.java" line="84" class="AppScrape.Indexer" package="AppScrape">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/AppScrape/Indexer.java" line="71" class="AppScrape.Indexer" package="AppScrape">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/AppScrape/Indexer.java" line="68" class="AppScrape.Indexer" package="AppScrape">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-    </line_breakpoints>
-    <method_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/AppScrape/Indexer.java" line="82" class="AppScrape.Indexer" package="AppScrape">
-        <option name="WATCH_ENTRY" value="true" />
-        <option name="WATCH_EXIT" value="true" />
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="REMOVE_AFTER_HIT" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="SUSPEND" value="true" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="true" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-    </method_breakpoints>
     <breakpoint_rules />
     <ui_properties />
   </component>
@@ -161,7 +80,7 @@
           <file leaf-file-name="Main.java" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/AppScrape/Main.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="71" column="65" selection-start="1992" selection-end="1992" vertical-scroll-proportion="-34.68">
+                <state line="68" column="0" selection-start="1764" selection-end="1764" vertical-scroll-proportion="-7.56">
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -178,13 +97,22 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="Indexer.java" pinned="false" current="false" current-in-tab="false">
+          <file leaf-file-name="Indexer.java" pinned="false" current="true" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/AppScrape/Indexer.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="71" column="0" selection-start="1832" selection-end="1832" vertical-scroll-proportion="0.0">
+                <state line="102" column="0" selection-start="2996" selection-end="2996" vertical-scroll-proportion="0.31393299">
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
+                </state>
+              </provider>
+            </entry>
+          </file>
+          <file leaf-file-name="Thread.java" pinned="false" current="false" current-in-tab="false">
+            <entry file="jar://C:/Program Files/Java/jdk1.7.0_25/src.zip!/java/lang/Thread.java">
+              <provider selected="true" editor-type-id="text-editor">
+                <state line="723" column="0" selection-start="26932" selection-end="26932" vertical-scroll-proportion="0.0">
+                  <folding />
                 </state>
               </provider>
             </entry>
@@ -200,11 +128,13 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="RobotController.java" pinned="false" current="true" current-in-tab="true">
+          <file leaf-file-name="RobotController.java" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/AppScrape/RobotController.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="244" column="52" selection-start="7745" selection-end="7749" vertical-scroll-proportion="0.4465517">
-                  <folding />
+                <state line="96" column="29" selection-start="2805" selection-end="2805" vertical-scroll-proportion="-8.4">
+                  <folding>
+                    <element signature="imports" expanded="true" />
+                  </folding>
                 </state>
               </provider>
             </entry>
@@ -212,7 +142,7 @@
           <file leaf-file-name="AppObject.java" pinned="false" current="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/AppScrape/AppObject.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state line="186" column="0" selection-start="6303" selection-end="6303" vertical-scroll-proportion="0.0">
+                <state line="62" column="39" selection-start="1684" selection-end="1684" vertical-scroll-proportion="0.0">
                   <folding>
                     <element signature="imports" expanded="true" />
                   </folding>
@@ -248,12 +178,12 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/src/AppScrape/Robot.java" />
-        <option value="$PROJECT_DIR$/src/AppScrape/AppObject.java" />
         <option value="$PROJECT_DIR$/src/AppScrape/TestingClass.java" />
         <option value="$PROJECT_DIR$/src/AppScrape/ThreadTesting.java" />
-        <option value="$PROJECT_DIR$/src/AppScrape/Indexer.java" />
         <option value="$PROJECT_DIR$/src/AppScrape/Main.java" />
         <option value="$PROJECT_DIR$/src/AppScrape/RobotController.java" />
+        <option value="$PROJECT_DIR$/src/AppScrape/AppObject.java" />
+        <option value="$PROJECT_DIR$/src/AppScrape/Indexer.java" />
       </list>
     </option>
   </component>
@@ -596,7 +526,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -612,7 +542,7 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.120064035" sideWeight="0.7026726" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2973274" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2973274" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -685,22 +615,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/AppScrape/RobotController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="137" column="29" selection-start="3877" selection-end="3877" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppScrape/AppObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="25" selection-start="1281" selection-end="1281" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/AppScrape/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
@@ -713,7 +627,9 @@
     <entry file="file://$PROJECT_DIR$/src/AppScrape/RobotController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="157" column="46" selection-start="4725" selection-end="4725" vertical-scroll-proportion="0.0">
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -737,15 +653,6 @@
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppScrape/AppObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="186" column="0" selection-start="6303" selection-end="6303" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Books - Free-20140226.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state line="48" column="0" selection-start="0" selection-end="9752" vertical-scroll-proportion="0.84210527">
@@ -767,15 +674,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppScrape/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="65" selection-start="1992" selection-end="1992" vertical-scroll-proportion="-34.68">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/AppScrape/TestingClass.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="29" column="98" selection-start="1026" selection-end="1026" vertical-scroll-proportion="0.0">
@@ -785,19 +683,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppScrape/Indexer.java">
+    <entry file="file://$PROJECT_DIR$/src/AppScrape/RobotController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="71" column="0" selection-start="1832" selection-end="1832" vertical-scroll-proportion="0.0">
+        <state line="96" column="29" selection-start="2805" selection-end="2805" vertical-scroll-proportion="-8.4">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppScrape/RobotController.java">
+    <entry file="jar://$USER_HOME$/Downloads/sqlite-jdbc4-3.8.2-SNAPSHOT.jar!/org/sqlite/core/NativeDB.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="244" column="52" selection-start="7745" selection-end="7749" vertical-scroll-proportion="0.4465517">
+        <state line="33" column="55" selection-start="1261" selection-end="1261" vertical-scroll-proportion="0.44958678">
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.7.0_25/src.zip!/java/lang/Thread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="723" column="0" selection-start="26932" selection-end="26932" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppScrape/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="68" column="0" selection-start="1764" selection-end="1764" vertical-scroll-proportion="-7.56">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppScrape/AppObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="62" column="39" selection-start="1684" selection-end="1684" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppScrape/Indexer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="102" column="0" selection-start="2996" selection-end="2996" vertical-scroll-proportion="0.31393299">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

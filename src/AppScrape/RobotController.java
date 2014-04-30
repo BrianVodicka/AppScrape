@@ -9,25 +9,12 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 /**
  * Defines Mouse Movements in iTunes Client
  */
 public class RobotController extends  Robot{
-
-    public static void main(String[] args) throws AWTException, InterruptedException {
-        Thread.sleep(1000);
-        Robot robot = new Robot();
-        int m = 0;
-        while (m < 5) {
-            robot.keyPress(KeyEvent.VK_DOWN);
-            Thread.sleep(10);
-            robot.keyRelease(KeyEvent.VK_DOWN);
-            m++;
-        }
-    }
 
     Robot robot;
     Dimension screenSize;
@@ -39,34 +26,6 @@ public class RobotController extends  Robot{
 
     int globalCounter = 0;
     ArrayList<ArrayList<String>> urls = new ArrayList<>();
-    //String[][] urls;
-
-    String[] categories = {
-            "Books",
-            "Business",
-            "Catalogs",
-            "Education",
-            "Entertainment",
-            "Finance",
-            "Food & Drink",
-            "Games",
-            "Health & Fitness",
-            "Kids",
-            "Lifestyle",
-            "Medical",
-            "Music",
-            "Navigation",
-            "News",
-            "Newsstand",
-            "Photo & Video",
-            "Productivity",
-            "Reference",
-            "Social Networking",
-            "Sports",
-            "Travel",
-            "Utilities",
-            "Weather"
-    };
 
     public RobotController() throws AWTException {
         robot = new Robot();
@@ -180,8 +139,6 @@ public class RobotController extends  Robot{
 
         // set up variables for loop to find link
         int categories_x = 1526;
-        int add = 0;
-        boolean found = false;
 
         Point p = findTopAppLink(categories_x);
         Thread.sleep(1000);
@@ -209,8 +166,9 @@ public class RobotController extends  Robot{
         ArrayList<String> currentUrls = new ArrayList<>();
         currentUrls.add(String.valueOf(counter));
         int count = 1;
-        while (count < 10) { // 192
-            for (int i = 0; i < 1; i++) { // 4
+        // TODO: improve this loop structure
+        while (count < 47) { // 192
+            for (int i = 0; i < 4; i++) { // 4
                 y_offset = y_offset + 204 * i;
                 for (int j = 0; j < 12; j++) { // 12
                     boolean valid = checkBackground(x_offset + 130 * j, y_offset);
@@ -318,9 +276,7 @@ public class RobotController extends  Robot{
 
     // currently unused
     private boolean testGrey(Color c) {
-        if (c.getRed() == c.getGreen() && c.getRed() == c.getBlue())
-            return true;
-        return false;
+        return c.getRed() == c.getGreen() && c.getRed() == c.getBlue();
     }
 
     private String getClipboard() throws InterruptedException, IOException, UnsupportedFlavorException {
@@ -330,11 +286,7 @@ public class RobotController extends  Robot{
             try {
                 result = (String) clipBoard.getData(DataFlavor.stringFlavor);
                 test = true;
-            } catch (IllegalArgumentException e) {
-                Thread.sleep(200);
-            } catch (UnsupportedFlavorException e) {
-                Thread.sleep(200);
-            } catch (IllegalStateException e) {
+            } catch (IllegalArgumentException | IllegalStateException | UnsupportedFlavorException e) {
                 Thread.sleep(200);
             }
         }
@@ -394,11 +346,7 @@ public class RobotController extends  Robot{
         if (temp.contains(substring)) {
             return true;
         }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (InterruptedException | IOException | UnsupportedFlavorException e) {
             e.printStackTrace();
         }
         return false;

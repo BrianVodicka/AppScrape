@@ -51,7 +51,7 @@ public class AppObject {
         this.rank = rank;
 
         String[] parts = s.split("app/");
-        String[] parts2 = parts[1].split("/");
+        String[] parts2 = parts[1].split("/"); // TODO: sometimes exception here???
         this.title = parts2[0];
         this.category = category;
         int temp = 18;

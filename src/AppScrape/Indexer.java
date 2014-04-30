@@ -87,19 +87,24 @@ public class Indexer implements Runnable{
             c = DriverManager.getConnection("jdbc:sqlite:C:/AppDir/apps/masterDB.db");
             c.setAutoCommit(false);
             Statement stmt = null;
+            stmt = c.createStatement();
             String query;
+
+            query = ("UPDATE " + categories[category] + " SET updated = 0;");
+            PreparedStatement update = c.prepareStatement(query);
+            update.executeUpdate();
+            update.close();
+
+            stmt.close();
             for (AppObject target : list) {
                 try {
 
                     stmt = c.createStatement();
 
-                    query = ("SELECT COUNT(*) AS total FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
+                    query = ("SELECT COUNT(*) AS total FROM " + categories[category] + " WHERE url = '" + target.getURL() + "';");
                     ResultSet rs = stmt.executeQuery(query);
                     int i = rs.getInt("total");
                     rs.close();
-
-                    query = ("UPDATE " + categories[category] + " SET updated = 0;");
-                    stmt.executeUpdate(query);
 
                     query = ("SELECT * FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
 
@@ -109,21 +114,23 @@ public class Indexer implements Runnable{
                         Integer oldRank = ss.getInt("today");
                         int newRank = target.getRank();
                         int diff = oldRank - newRank;
-                        query = ("UPDATE " + categories[category] + " SET today = " + newRank + ", yesterday = " + diff + " WHERE name = '" + target.getTitle() + "';");
+                        query = ("UPDATE " + categories[category] + " SET today = " + newRank + ", yesterday = " + diff + ", updated = 1 WHERE name = '" + target.getTitle() + "';");
                         PreparedStatement sql = c.prepareStatement(query);
                         sql.executeUpdate();
+                        sql.close();
                     } else if (i == 0) {
                         PreparedStatement statement = c.prepareStatement(query);
                         ResultSet ss = statement.getGeneratedKeys();
                         System.out.println(" -- Size 0 -- \n -- For: " + target.getTitle());
-                        System.out.println("INSERT INTO " + categories[category] + " (name, url, today) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank() + ");");
-                        query = ("INSERT INTO " + categories[category] + " (name, url, today) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank() + ");");
+                        System.out.println("INSERT INTO " + categories[category] + " (name, url, today, updated) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank() + ", 1);");
+                        query = ("INSERT INTO " + categories[category] + " (name, url, today, updated) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank() + ", 1);");
                         PreparedStatement sql = c.prepareStatement(query);
                         sql.executeUpdate();
+                        sql.close();
                     } else {
                         throw new Exception("Multiple apps found for title: " + target.getTitle());
                     }
-                    stmt.close();
+                    //stmt.close();
                     c.commit();
 
                 } catch (Exception e) {
@@ -131,9 +138,11 @@ public class Indexer implements Runnable{
                 }
             }
             // for all leftover apps...
-            stmt = c.createStatement();
-            query = ("UPDATE " + categories[category] + " SET today = 201 WHERE updated = " + 0 + ";");
-            stmt.executeUpdate(query);
+            //Statement tstmt = c.createStatement();
+            query = ("UPDATE " + categories[category] + " SET today = 201 WHERE updated = 0;");
+            PreparedStatement sql = c.prepareStatement(query);
+            sql.executeUpdate();
+            sql.close();
             stmt.close();
             c.close();
         } catch (SQLException | ClassNotFoundException e){
