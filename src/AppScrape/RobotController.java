@@ -134,8 +134,8 @@ public class RobotController extends  Robot{
         int categories_x = screenSize.width / 2 + 625;
 
         robot.mouseMove(categories_x, categories_y);
-        // start at 2 bc min move down is 30
-        for (int i = 1; i < 24; i++) { // 24
+
+        for (int i = 1; i < 2; i++) { // 24
             long startTime = System.nanoTime();
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
@@ -153,10 +153,9 @@ public class RobotController extends  Robot{
             robot.keyRelease(KeyEvent.VK_ENTER);
             Thread.sleep(6000);
 
-            boolean free_apps = false;
-            getPaidApps(i, free_apps);
-            free_apps = true;
-            getPaidApps(i, free_apps);
+            Point position = null;
+            position = getPaidApps(i, position);
+            //getPaidApps(i, position);
 
             robot.mouseMove(20, 100);
             Thread.sleep(20);
@@ -169,7 +168,15 @@ public class RobotController extends  Robot{
         }
     }
 
-    private void getPaidApps(int counter, boolean free) throws InterruptedException, IOException, UnsupportedFlavorException {
+    private Point getPaidApps(int counter, Point link_pos) throws InterruptedException, IOException, UnsupportedFlavorException {
+        if (link_pos != null) {
+            robot.mouseMove(link_pos.x, link_pos.y);
+            robot.mousePress(LEFT_CLICK);
+            robot.mouseRelease(LEFT_CLICK);
+            Thread.sleep(7000);
+            getTopApps(counter, link_pos);
+            return null;
+        }
 
         // set up variables for loop to find link
         int categories_x = 1526;
@@ -179,17 +186,18 @@ public class RobotController extends  Robot{
         Point p = findTopAppLink(categories_x);
         Thread.sleep(1000);
         if (p == null)
-            return;
+            return null;
 
         robot.mouseMove(p.x, p.y);
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
         Thread.sleep(7000);
-        getTopApps(counter, free);
+        getTopApps(counter, link_pos);
+        return p;
     }
 
-    private void getTopApps(int counter, boolean free) throws IOException, UnsupportedFlavorException, InterruptedException {
-        if (free == true) {
+    private void getTopApps(int counter, Point link_pos) throws IOException, UnsupportedFlavorException, InterruptedException {
+        if (link_pos != null) {
             robot.mouseMove(screenSize.width / 2, 140);
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
@@ -201,8 +209,8 @@ public class RobotController extends  Robot{
         ArrayList<String> currentUrls = new ArrayList<>();
         currentUrls.add(String.valueOf(counter));
         int count = 1;
-        while (count < 192) { // 192
-            for (int i = 0; i < 4; i++) { // 4
+        while (count < 10) { // 192
+            for (int i = 0; i < 1; i++) { // 4
                 y_offset = y_offset + 204 * i;
                 for (int j = 0; j < 12; j++) { // 12
                     boolean valid = checkBackground(x_offset + 130 * j, y_offset);

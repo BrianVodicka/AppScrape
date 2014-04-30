@@ -14,7 +14,7 @@ import java.sql.*;
  */
 public class Indexer {
 
-    private Connection c;
+    //private static Connection c;
 
     static final String[] categories = {
         "BooksPaid",
@@ -65,50 +65,73 @@ public class Indexer {
     }
 
     public Indexer(){
-        c = null;
+        /*c = null;
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:C:/AppDir/apps/masterDB.db");
             c.setAutoCommit(false);
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage());
-        }
+        }*/
     }
 
-    public void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
-        Statement stmt = null;
+    public static void index(int category, ArrayList<AppObject> list) throws FileNotFoundException, UnsupportedEncodingException {
         try {
+            Connection c = null;
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:C:/AppDir/apps/masterDB.db");
+            c.setAutoCommit(false);
             for (AppObject target : list) {
-                stmt = c.createStatement();
-                String query = ("SELECT name FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
-                ResultSet rs = stmt.executeQuery(query);
-                int size = 0;
-                while( rs.next() ) {
-                    size++;
-                }
-                rs = stmt.executeQuery(query);
-                if(size == 1) {
-                    Integer oldRank = rs.getInt("rank");
-                    int newRank = target.getRank();
-                    int diff = newRank - oldRank;
-                    query = ("UPDATE name FROM " + categories[category] + " SET today = " + newRank + ", yesterday = " + diff + " WHERE name = '" + target.getTitle() + "';");
-                    stmt.executeQuery(query);
-                } else if (size == 0) {
-                    query = ("INSERT INTO " + categories[category] + " (name, url, rank) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank());
-                    stmt.executeQuery(query);
-                } else {
-                    throw new Exception("Multiple apps found for title: " + target.getTitle());
-                }
+                try {
+                    Statement stmt = null;
+                    stmt = c.createStatement();
+                    System.out.println(target.getTitle());
+                    /*String query = ("SELECT name FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
+                    PreparedStatement statement = c.prepareStatement(query);
+                    ResultSet rs = statement.getGeneratedKeys();
+                    int size = 0;
+                    while( rs.next() ) {
+                        size++;
+                        System.out.println(size);
+                    }*/
 
+                    String query = ("SELECT COUNT(*) AS total FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
+                    ResultSet rs = stmt.executeQuery(query);
+                    int i = rs.getInt("total");
+                    rs.close();
+
+                    query = ("SELECT * FROM " + categories[category] + " WHERE name = '" + target.getTitle() + "';");
+
+                    if(i == 1) {
+                        ResultSet ss = stmt.executeQuery(query);
+                        System.out.println("-- Size 1 -- \n -- For: " + target.getTitle());
+                        Integer oldRank = ss.getInt("today");
+                        int newRank = target.getRank();
+                        int diff = newRank - oldRank;
+                        query = ("UPDATE " + categories[category] + " SET today = " + newRank + ", yesterday = " + diff + " WHERE name = '" + target.getTitle() + "';");
+                        PreparedStatement sql = c.prepareStatement(query);
+                        sql.executeUpdate();
+                    } else if (i == 0) {
+                        PreparedStatement statement = c.prepareStatement(query);
+                        ResultSet ss = statement.getGeneratedKeys();
+                        System.out.println(" -- Size 0 -- \n -- For: " + target.getTitle());
+                        System.out.println("INSERT INTO " + categories[category] + " (name, url, today) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank() + ");");
+                        query = ("INSERT INTO " + categories[category] + " (name, url, today) VALUES ('" + target.getTitle() +"', '" + target.getURL() + "', " + target.getRank() + ");");
+                        PreparedStatement sql = c.prepareStatement(query);
+                        sql.executeUpdate();
+                    } else {
+                        throw new Exception("Multiple apps found for title: " + target.getTitle());
+                    }
+                    stmt.close();
+                    c.commit();
+
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
             }
-            stmt.close();
-            c.commit();
-        } catch (SQLException e) {
-            e.getStackTrace();
-        } catch (Exception e) {
+            c.close();
+        } catch (SQLException | ClassNotFoundException e){
             e.printStackTrace();
         }
     }
-
-
 }

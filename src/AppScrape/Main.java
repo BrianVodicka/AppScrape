@@ -65,23 +65,24 @@ public class Main {
     public static void main(String[] args){
         try {
             RobotController test = new RobotController();
+            Indexer index = new Indexer();
             urls = test.begin("C:/iTunes/iTunes.exe");
             for (int i = 0; i < urls.size(); i++) {
                 ArrayList<String> temp = urls.get(i);
                 ArrayList<AppObject> objects = new ArrayList<>();
                 for(int j = 1; j < temp.size(); j++) {
                     String[] target = temp.get(j).split(" ");
-                    System.out.println(target[0] + " " + Integer.parseInt(target[0]) + " " + target[1]);
+                    //System.out.println(target[0] + " " + Integer.parseInt(target[0]) + " " + target[1]);
                     String m = categories[i];
                     objects.add(new AppObject(target[1], Integer.parseInt(target[0]), categories[i]));
                 }
                 System.out.println("Indexing " + categories[i] + "...");
-                //Indexer.index(i, objects);
+                index.index(i, objects);
             }
 
 
             //Movement charting...
-            File folder = new File("C:\\AppDir");
+            /*File folder = new File("C:\\AppDir");
             File listOfFiles[] = folder.listFiles();
 
             File trackingFoler = new File("C:\\AppDir\\tracking");
@@ -175,18 +176,15 @@ public class Main {
                 trackingWriter.close();
             }
             majorWriter.close();
+            */
         } catch (AWTException e) {
-
-        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (UnsupportedFlavorException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (InterruptedException | UnsupportedFlavorException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void compareWith(AppObject original, File readFile, PrintWriter writer, PrintWriter trackingWriter, PrintWriter majorWriter, int time){
+    /*private static void compareWith(AppObject original, File readFile, PrintWriter writer, PrintWriter trackingWriter, PrintWriter majorWriter, int time){
         FileReader reader = null;
         File dir = new File("C:\\AppDir\\changes");
         try {
@@ -217,6 +215,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
-    }
+    }*/
 
 }
