@@ -94,7 +94,7 @@ public class RobotController extends  Robot{
 
         robot.mouseMove(categories_x, categories_y);
 
-        for (int i = 1; i < 2; i++) { // 24
+        for (int i = 1; i < 24; i++) { // 24
             long startTime = System.nanoTime();
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
@@ -167,7 +167,7 @@ public class RobotController extends  Robot{
         currentUrls.add(String.valueOf(counter));
         int count = 1;
         // TODO: improve this loop structure
-        while (count < 47) { // 192
+        while (count < 192) { // 192
             for (int i = 0; i < 4; i++) { // 4
                 y_offset = y_offset + 204 * i;
                 for (int j = 0; j < 12; j++) { // 12
@@ -200,7 +200,7 @@ public class RobotController extends  Robot{
         }
 
         // start new thread to index these apps
-        Indexer indexer = new Indexer(counter + free - 1, currentUrls);
+        Indexer indexer = new Indexer((2 * counter) - 2 + free, currentUrls);
         Thread t = new Thread(indexer);
         t.start();
 
@@ -315,7 +315,7 @@ public class RobotController extends  Robot{
         robot.mouseMove(x, y);
         robot.mousePress(RIGHT_CLICK); // right click on app
         robot.mouseRelease(RIGHT_CLICK);
-        Thread.sleep(400);
+        Thread.sleep(550);
         robot.mouseMove(x + 35, y + 35);
         robot.mousePress(LEFT_CLICK); // copy url
         robot.mouseRelease(LEFT_CLICK);
