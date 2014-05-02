@@ -24,7 +24,6 @@ public class RobotController extends  Robot{
     final int LEFT_CLICK = InputEvent.BUTTON1_DOWN_MASK;
     final int RIGHT_CLICK = InputEvent.BUTTON3_DOWN_MASK;
 
-    int globalCounter = 0;
     ArrayList<ArrayList<String>> urls = new ArrayList<>();
 
     public RobotController() throws AWTException {
@@ -34,9 +33,10 @@ public class RobotController extends  Robot{
     }
 
     public ArrayList<ArrayList<String>> begin(String target) throws InterruptedException, IOException, UnsupportedFlavorException {
-        //openItunes(target);
+        System.out.println("hi");
+        openItunes(target);
         getBearings();
-        //getIntoAppStore();
+        getIntoAppStore();
         moveIntoCategory();
         return urls;
     }
@@ -45,7 +45,10 @@ public class RobotController extends  Robot{
         try{
             Runtime run = Runtime.getRuntime();
             Process pro = run.exec(target);
-            Thread.sleep(10000); // wait 10 seconds for program to load
+            Thread.sleep(4000);
+            while(!pageLoaded()) {
+                Thread.sleep(1000);
+            }
         }
         catch(Exception ex){
             System.out.println(ex);
@@ -76,25 +79,30 @@ public class RobotController extends  Robot{
         robot.mouseMove(width - 50, 100);
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
-        Thread.sleep(6000);
+        do {
+            Thread.sleep(500);
+        } while(!pageLoaded());
+        Thread.sleep(300);
 
         // Click on "App Store" link
         robot.mouseMove(width/2, 100);
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
-        Thread.sleep(6000);
-
+        do {
+            Thread.sleep(100);
+        } while(!pageLoaded());
+        Thread.sleep(300);
     }
 
     // assumes page is front page of AppStore
     private void moveIntoCategory() throws InterruptedException, IOException, UnsupportedFlavorException {
-        Thread.sleep(2000);
+        Thread.sleep(2000); // TODO: maybe delete this sleep??
         int categories_y = 525;
         int categories_x = screenSize.width / 2 + 625;
 
         robot.mouseMove(categories_x, categories_y);
 
-        for (int i = 1; i < 24; i++) { // 24
+        for (int i = 1; i < 2; i++) { // 24
             long startTime = System.nanoTime();
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
@@ -102,6 +110,7 @@ public class RobotController extends  Robot{
             robot.mouseRelease(LEFT_CLICK);
             Thread.sleep(800);
 
+            // move into specific category page
             for (int j = 0; j < i; j++) {
                 robot.keyPress(KeyEvent.VK_DOWN);
                 Thread.sleep(10);
@@ -110,17 +119,25 @@ public class RobotController extends  Robot{
             robot.keyPress(KeyEvent.VK_ENTER);
             Thread.sleep(10);
             robot.keyRelease(KeyEvent.VK_ENTER);
-            Thread.sleep(6000);
+            do {
+                Thread.sleep(100);
+            } while(!pageLoaded());
 
+            // get the apps for this category
             Point position = null;
             position = getPaidApps(i, position);
             getPaidApps(i, position);
 
+            // go back to main AppStore page
             robot.mouseMove(20, 100);
             Thread.sleep(20);
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
-            Thread.sleep(3000);
+            do {
+                Thread.sleep(100);
+            } while(!pageLoaded());
+
+            // for development: see how long it took to index apps
             long endTime = System.nanoTime();
             long elapsed = (endTime - startTime) / 1000000000;
             System.out.println("Time wass: " + elapsed);
@@ -128,23 +145,26 @@ public class RobotController extends  Robot{
     }
 
     private Point getPaidApps(int counter, Point link_pos) throws InterruptedException, IOException, UnsupportedFlavorException {
+        // move into free apps page
         if (link_pos != null) {
             robot.mouseMove(link_pos.x, link_pos.y);
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
-            Thread.sleep(7000);
+            do {
+                Thread.sleep(100);
+            } while(!pageLoaded());
+
             getTopApps(counter, link_pos, 1);
             return null;
         }
 
-        // set up variables for loop to find link
-        int categories_x = 1526;
-
+        int categories_x = 1526; // TODO: make this variable adjust dynamically to screen size
         Point p = findTopAppLink(categories_x);
         Thread.sleep(1000);
         if (p == null)
             return null;
 
+        // move into paid apps page
         robot.mouseMove(p.x, p.y);
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
@@ -154,39 +174,49 @@ public class RobotController extends  Robot{
     }
 
     private void getTopApps(int counter, Point link_pos, int free) throws IOException, UnsupportedFlavorException, InterruptedException {
+        // click on free apps link
         if (link_pos != null) {
             robot.mouseMove(screenSize.width / 2, 140);
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
-            Thread.sleep(6000);
+            do {
+                Thread.sleep(100);
+            } while(!pageLoaded());
+
         }
+
+        // get names and rankings of all apps on this page
         int x_offset = screenSize.width / 2 - 720;
-        int y_offset = 235;
+        int y_offset = 235; // TODO: why is y_offset 235 here, but 204 and 225 down there??
         robot.mouseMove(x_offset, y_offset);
         ArrayList<String> currentUrls = new ArrayList<>();
         currentUrls.add(String.valueOf(counter));
         int count = 1;
         // TODO: improve this loop structure
-        while (count < 192) { // 192
-            for (int i = 0; i < 4; i++) { // 4
+        // TODO: account for last 8 apps
+        // TODO: make adjustments for different screen sizes
+        while (count < 20) { // there are 200 apps in total; get each
+            for (int i = 0; i < 4; i++) { // move down a row of apps; 4 rows fits on my screen
                 y_offset = y_offset + 204 * i;
-                for (int j = 0; j < 12; j++) { // 12
+                for (int j = 0; j < 12; j++) { // move along each row of apps; 12 apps in row
                     boolean valid = checkBackground(x_offset + 130 * j, y_offset);
                     if (!valid) {
                         y_offset = repositionMouse(x_offset + 130 * j, y_offset);
                     }
+                    // get the name of the app and its rank
                     quickCopy(x_offset + 130 * j, y_offset);
                     String result = getClipboard();
+                    // TODO: determine why count variable is needed
                     if(!currentUrls.contains(result))
                         currentUrls.add(count + " " + result);
-                    else {
-                        System.out.println("DID NOT ADD: " + result);
+                    else { // if it does not copy in time, recopy
                         j--;
                         continue;
                     }
                     Thread.sleep(50);
                     count++;
                 }
+                // TODO: find why y_offset is being set here?
                 y_offset = 225;
             }
 
@@ -205,21 +235,24 @@ public class RobotController extends  Robot{
         t.start();
 
         System.out.println("SIZE IS:" + currentUrls.size() + "List is: " + counter);
-        urls.add(currentUrls);
-        globalCounter++;
+        //urls.add(currentUrls);
+        //globalCounter++;
 
+        // move back one page when done indexing
         robot.mouseMove(20, 100);
         Thread.sleep(20);
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
-        Thread.sleep(7000);
+        do {
+            Thread.sleep(100);
+        } while(!pageLoaded());
     }
 
     private Point findTopAppLink(int x_pos) throws InterruptedException {
         int y_pos = 675; // 675
         boolean found = false;
         // TODO: make memory usage better by only capturing part of the screen
-        BufferedImage screen = robot.createScreenCapture(new Rectangle(screenSize));
+        // TODO: fix this loop structure
         while (!found) {
             for (; y_pos < 1000; y_pos += 3) { // 1000
                 robot.mouseMove(x_pos, y_pos);
@@ -232,51 +265,8 @@ public class RobotController extends  Robot{
             Thread.sleep(600);
             x_pos += 3;
         }
-        /*for (int i = 2; i < 125; i += 2) {
-            if (checkGrey(screen, y_pos - i))
-                return y_pos - i - 26;
-        }*/
         // TODO: throw app not found exception
         return null;
-    }
-
-    private boolean testColor(BufferedImage screen, int y_pos, int x_pos) {
-        //robot.mouseMove(x_pos, y_pos);
-        ///int temp = screen.getRGB(x_pos, y_pos);
-        //Color c = new Color(temp);
-        if (checkAppValid(x_pos, y_pos)) {
-            robot.mouseMove(x_pos, y_pos);
-            /*int tempb = screen.getRGB(x_pos, y_pos - 5);
-            int tempe = screen.getRGB(x_pos, y_pos + 5);
-            int tempc = screen.getRGB(x_pos, y_pos - 10);
-            int tempd = screen.getRGB(x_pos, y_pos + 10);
-            if (!testGrey(new Color(tempb)) && !testGrey(new Color(tempc)) && !testGrey(new Color(tempd)) && !testGrey(new Color(tempe)))
-                return true;*/
-            return true;
-        }
-        return false;
-    }
-
-    // currently unused
-    private boolean checkGrey(BufferedImage screen, int test_position) {
-        int x_pos = screenSize.width / 2 + 569;
-        int y_pos = test_position;
-        int temp = screen.getRGB(x_pos, y_pos);
-        Color c = new Color(temp);
-        if (testGrey(c)) {
-            int tempb = screen.getRGB(x_pos - 5, y_pos);
-            int tempe = screen.getRGB(x_pos + 5, y_pos);
-            int tempc = screen.getRGB(x_pos - 10, y_pos);
-            int tempd = screen.getRGB(x_pos + 10, y_pos);
-            if (testGrey(new Color(tempb)) && testGrey(new Color(tempc)) && testGrey(new Color(tempd)) && testGrey(new Color(tempe)))
-                return true;
-        }
-        return false;
-    }
-
-    // currently unused
-    private boolean testGrey(Color c) {
-        return c.getRed() == c.getGreen() && c.getRed() == c.getBlue();
     }
 
     private String getClipboard() throws InterruptedException, IOException, UnsupportedFlavorException {
@@ -299,11 +289,9 @@ public class RobotController extends  Robot{
         robot.mousePress(RIGHT_CLICK); // right click on app
         robot.mouseRelease(RIGHT_CLICK);
         Thread.sleep(400);
-        BufferedImage screen = robot.createScreenCapture(new Rectangle(screenSize));
-        Color temp = new Color(screen.getRGB(x + 35, y + 35));
+        Color temp = robot.getPixelColor(x + 35, y + 35);
         System.out.println("COLORS ARE: " + temp.getRed() + " " + temp.getGreen() + " " + temp.getBlue());
         if (temp.getRed() == 240 && temp.getGreen() == 206 && temp.getBlue() == 135) {
-            Thread.sleep(1000);
             robot.mouseMove(x + 35, y + 35);
             robot.mousePress(LEFT_CLICK); // copy url
             robot.mouseRelease(LEFT_CLICK);
@@ -341,7 +329,6 @@ public class RobotController extends  Robot{
             return false;
         copyToClipboard(x, y);
         String temp = getClipboard();
-        System.out.println(temp);
         String substring = "https://itunes.apple.com/WebObjects/MZStore.woa/wa/viewTop";
         if (temp.contains(substring)) {
             return true;
@@ -361,4 +348,30 @@ public class RobotController extends  Robot{
         return y + plus;
     }
 
+    private boolean pageLoaded(){
+        int x = screenSize.width / 2;
+
+        // perform three color checks on top to see if apple logo is there yet
+        int color = robot.getPixelColor(x, 34).getRed();
+        System.out.println("1 " + color);
+        if (!(color > 87 && color < 95))
+            return false;
+        color = robot.getPixelColor(x + 5, 34).getRed();
+        System.out.print ("2 " + color);
+        if (!(color > 87 && color < 95))
+            return false;
+        color = robot.getPixelColor(x - 5, 34).getRed();
+        System.out.println("3 " + color);
+        if (!(color > 87 && color < 95))
+            return false;
+        return true;
+    }
+
+    private boolean checkRightClickValid(int x, int y){
+        Color color = robot.getPixelColor(x + 20, y + 20);
+        Color grey = new Color(240, 240, 240);
+        if (color.equals(grey))
+            return true;
+        return false;
+    }
 }
