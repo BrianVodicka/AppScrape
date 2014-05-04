@@ -8,6 +8,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 
@@ -33,7 +34,7 @@ public class RobotController extends  Robot{
     }
 
     public ArrayList<ArrayList<String>> begin(String target) throws InterruptedException, IOException, UnsupportedFlavorException {
-        System.out.println("hi");
+        new Indexer(); // updates the current date
         openItunes(target);
         getBearings();
         getIntoAppStore();
@@ -43,16 +44,22 @@ public class RobotController extends  Robot{
 
     private void openItunes(String target) {
         try{
-            Runtime run = Runtime.getRuntime();
-            Process pro = run.exec(target);
+            Process pro = Runtime.getRuntime().exec(target);
             Thread.sleep(4000);
             while(!pageLoaded()) {
                 Thread.sleep(1000);
             }
+            Thread.sleep(2000);
         }
         catch(Exception ex){
             System.out.println(ex);
         }
+    }
+
+    private void reopenItunes() throws InterruptedException {
+        openItunes("C:/iTunes/iTunes.exe");
+        getBearings();
+        getIntoAppStore();
     }
 
     private void getBearings() throws InterruptedException {
@@ -89,9 +96,9 @@ public class RobotController extends  Robot{
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
         do {
-            Thread.sleep(100);
+            Thread.sleep(500);
         } while(!pageLoaded());
-        Thread.sleep(300);
+        Thread.sleep(2000);
     }
 
     // assumes page is front page of AppStore
@@ -102,7 +109,7 @@ public class RobotController extends  Robot{
 
         robot.mouseMove(categories_x, categories_y);
 
-        for (int i = 1; i < 2; i++) { // 24
+        for (int i = 1; i < 24; i++) { // 24
             long startTime = System.nanoTime();
             // Click into "Categories" - opens drop down menu
             robot.mouseMove(categories_x, categories_y);
@@ -120,22 +127,18 @@ public class RobotController extends  Robot{
             Thread.sleep(10);
             robot.keyRelease(KeyEvent.VK_ENTER);
             do {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } while(!pageLoaded());
+            Thread.sleep(300);
 
             // get the apps for this category
             Point position = null;
             position = getPaidApps(i, position);
             getPaidApps(i, position);
 
-            // go back to main AppStore page
-            robot.mouseMove(20, 100);
-            Thread.sleep(20);
-            robot.mousePress(LEFT_CLICK);
-            robot.mouseRelease(LEFT_CLICK);
-            do {
-                Thread.sleep(100);
-            } while(!pageLoaded());
+            Runtime.getRuntime().exec("taskkill /f /im itunes.exe");
+            Thread.sleep(1000);
+            reopenItunes();
 
             // for development: see how long it took to index apps
             long endTime = System.nanoTime();
@@ -151,8 +154,9 @@ public class RobotController extends  Robot{
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
             do {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } while(!pageLoaded());
+            Thread.sleep(300);
 
             getTopApps(counter, link_pos, 1);
             return null;
@@ -180,8 +184,9 @@ public class RobotController extends  Robot{
             robot.mousePress(LEFT_CLICK);
             robot.mouseRelease(LEFT_CLICK);
             do {
-                Thread.sleep(100);
+                Thread.sleep(500);
             } while(!pageLoaded());
+            Thread.sleep(300);
 
         }
 
@@ -195,10 +200,10 @@ public class RobotController extends  Robot{
         // TODO: improve this loop structure
         // TODO: account for last 8 apps
         // TODO: make adjustments for different screen sizes
-        while (count < 20) { // there are 200 apps in total; get each
-            for (int i = 0; i < 4; i++) { // move down a row of apps; 4 rows fits on my screen
+        while (count < 192) { // there are 200 apps in total; get each // 192
+            for (int i = 0; i < 4; i++) { // move down a row of apps; 4 rows fits on my screen // 4
                 y_offset = y_offset + 204 * i;
-                for (int j = 0; j < 12; j++) { // move along each row of apps; 12 apps in row
+                for (int j = 0; j < 12; j++) { // move along each row of apps; 12 apps in row // 12
                     boolean valid = checkBackground(x_offset + 130 * j, y_offset);
                     if (!valid) {
                         y_offset = repositionMouse(x_offset + 130 * j, y_offset);
@@ -244,8 +249,9 @@ public class RobotController extends  Robot{
         robot.mousePress(LEFT_CLICK);
         robot.mouseRelease(LEFT_CLICK);
         do {
-            Thread.sleep(100);
+            Thread.sleep(500);
         } while(!pageLoaded());
+        Thread.sleep(300);
     }
 
     private Point findTopAppLink(int x_pos) throws InterruptedException {
@@ -367,6 +373,7 @@ public class RobotController extends  Robot{
         return true;
     }
 
+    // TODO: use this method
     private boolean checkRightClickValid(int x, int y){
         Color color = robot.getPixelColor(x + 20, y + 20);
         Color grey = new Color(240, 240, 240);
