@@ -124,12 +124,12 @@ public class Indexer implements Runnable{
             statement.close();
             c.commit();
 
-            c = DriverManager.getConnection("jdbc:sqlite:C:/AppDir/apps/newDB.db");
+            /*c = DriverManager.getConnection("jdbc:sqlite:C:/AppDir/apps/newDB.db");
             c.setAutoCommit(false);
             stmt = c.createStatement();
             query = ("INSERT INTO " + categories[category] + "(name, url, rank, date) VALUES('ma', 'as', 4, 6);");
             stmt.executeUpdate(query);
-            c.close();
+            c.close();*/
 
             for (AppObject target : list) {
                 try {
@@ -145,7 +145,12 @@ public class Indexer implements Runnable{
                     rs = stmt.executeQuery(query);
                     int today = rs.getInt("date");
                     int rank = rs.getInt("rank");
-                    rs.next();
+                    try {
+                        rs.next();
+                        rs.next();
+                    } catch (SQLException e) {
+                        continue;
+                    }
                     int yesterday = rs.getInt("date");
                     if (today - yesterday == 1) {
                         int yesterdayRank = rs.getInt("rank");

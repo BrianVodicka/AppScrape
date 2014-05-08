@@ -52,7 +52,7 @@ public class RobotController extends  Robot{
             Thread.sleep(2000);
         }
         catch(Exception ex){
-            System.out.println(ex);
+            ex.printStackTrace();
         }
     }
 
@@ -143,7 +143,7 @@ public class RobotController extends  Robot{
             // for development: see how long it took to index apps
             long endTime = System.nanoTime();
             long elapsed = (endTime - startTime) / 1000000000;
-            System.out.println("Time wass: " + elapsed);
+            System.out.println("Time was: " + elapsed);
         }
     }
 
@@ -186,7 +186,7 @@ public class RobotController extends  Robot{
             do {
                 Thread.sleep(500);
             } while(!pageLoaded());
-            Thread.sleep(300);
+            Thread.sleep(1000);
 
         }
 
@@ -296,7 +296,7 @@ public class RobotController extends  Robot{
         robot.mouseRelease(RIGHT_CLICK);
         Thread.sleep(400);
         Color temp = robot.getPixelColor(x + 35, y + 35);
-        System.out.println("COLORS ARE: " + temp.getRed() + " " + temp.getGreen() + " " + temp.getBlue());
+        //System.out.println("COLORS ARE: " + temp.getRed() + " " + temp.getGreen() + " " + temp.getBlue());
         if (temp.getRed() == 240 && temp.getGreen() == 206 && temp.getBlue() == 135) {
             robot.mouseMove(x + 35, y + 35);
             robot.mousePress(LEFT_CLICK); // copy url
@@ -359,15 +359,12 @@ public class RobotController extends  Robot{
 
         // perform three color checks on top to see if apple logo is there yet
         int color = robot.getPixelColor(x, 34).getRed();
-        System.out.println("1 " + color);
         if (!(color > 87 && color < 95))
             return false;
         color = robot.getPixelColor(x + 5, 34).getRed();
-        System.out.print ("2 " + color);
         if (!(color > 87 && color < 95))
             return false;
         color = robot.getPixelColor(x - 5, 34).getRed();
-        System.out.println("3 " + color);
         if (!(color > 87 && color < 95))
             return false;
         return true;
